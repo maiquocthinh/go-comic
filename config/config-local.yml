@@ -1,0 +1,13 @@
+Server:
+  Port: :8080
+  ReadTimeout: 5
+  WriteTimeout: 5
+  JwtSecretKey: B5bJHoI8aVLjAAeV
+
+MySQL:
+  Host: localhost
+  Port: 3306
+  Username: root
+  Password: 
+  DBName: nettruyen
+  DriverName: mysql
