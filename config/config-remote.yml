@@ -1,0 +1,13 @@
+Server:
+  Port: :8080
+  ReadTimeout: 5
+  WriteTimeout: 5
+  JwtSecretKey: B5bJHoI8aVLjAAeV
+
+MySQL:
+  Host: bnjsdjmyfiuggbvdrwqd-mysql.services.clever-cloud.com
+  Port: 3306
+  Username: uqlzhbyuhhtr7nhp
+  Password: Xe7mnphtx0o4DBXhn8l3
+  DBName: bnjsdjmyfiuggbvdrwqd
+  DriverName: mysql
