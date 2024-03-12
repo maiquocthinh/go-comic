@@ -29,11 +29,11 @@ func (h *comicHandlers) List() gin.HandlerFunc {
 		var filter models.ComicFilter
 
 		if err := ctx.BindQuery(&paging); err != nil {
-			panic(err)
+			panic(common.NewBadRequestApiError(err, ""))
 		}
 
 		if err := ctx.BindQuery(&filter); err != nil {
-			panic(err)
+			panic(common.NewBadRequestApiError(err, ""))
 		}
 
 		listComic, err := h.comicUseCase.List(ctx.Request.Context(), &filter, &paging)
@@ -49,7 +49,7 @@ func (h *comicHandlers) GetComic() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		id, err := strconv.Atoi(ctx.Param("id"))
 		if err != nil {
-			panic(err)
+			panic(common.NewBadRequestApiError(err, "`id` must be int"))
 		}
 
 		comicDetail, err := h.comicUseCase.GetComic(ctx.Request.Context(), id)
