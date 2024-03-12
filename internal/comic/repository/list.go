@@ -70,7 +70,7 @@ func (repo *comicRepo) List(ctx context.Context, filter *models.ComicFilter, pag
 
 	//paging
 	queryCount = strings.Replace(query, queryInit, queryCount, 1)
-	if err := repo.db.QueryRowContext(ctx, queryCount, args...).
+	if err := repo.db.QueryRowxContext(ctx, queryCount, args...).
 		Scan(&paging.Total); err != nil {
 		return nil, err
 	}
@@ -85,6 +85,44 @@ func (repo *comicRepo) List(ctx context.Context, filter *models.ComicFilter, pag
 		args...,
 	)
 
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var comic entities.Comic
+		if err := rows.StructScan(&comic); err != nil {
+			return nil, err
+		}
+		listComic = append(listComic, &comic)
+	}
+
+	return listComic, nil
+}
+
+func (repo *comicRepo) SearchComic(ctx context.Context, keyword string, paging *common.Paging) ([]*entities.Comic, error) {
+	listComic := make([]*entities.Comic, 0)
+
+	if err := repo.db.QueryRowxContext(
+		ctx,
+		"SELECT COUNT(*) FROM `comics` WHERE MATCH ( `name`, `other_name` ) AGAINST ( ? )",
+		keyword,
+	).Scan(&paging.Total); err != nil {
+		return nil, err
+	}
+	paging.Sync()
+
+	rows, err := repo.db.Unsafe().QueryxContext(
+		ctx,
+		"SELECT	*,  MATCH ( `name`, `other_name` ) AGAINST ( ? ) as relative "+
+			"FROM `comics` "+
+			"WHERE MATCH ( `name`, `other_name` ) AGAINST ( ? ) "+
+			"ORDER BY relative DESC "+
+			"LIMIT ? OFFSET ? ;",
+		keyword, keyword,
+		paging.PageSize, (paging.Page-1)*paging.PageSize,
+	)
 	if err != nil {
 		return nil, err
 	}

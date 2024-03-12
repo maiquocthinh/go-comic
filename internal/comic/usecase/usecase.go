@@ -21,4 +21,5 @@ type ComicUseCase interface {
 	List(ctx context.Context, filter *models.ComicFilter, paging *common.Paging) ([]*entities.Comic, error)
 	GetComic(ctx context.Context, ID int) (*models.ComicDetail, error)
 	GetChapterOfComic(ctx context.Context, comicID, chapterID int) (*models.ChapterDetail, error)
+	SearchComic(ctx context.Context, keyword string, paging *common.Paging) ([]*entities.Comic, error)
 }

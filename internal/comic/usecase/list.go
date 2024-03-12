@@ -13,3 +13,7 @@ func (uc *comicUseCase) List(ctx context.Context, filter *models.ComicFilter, pa
 
 	return uc.comicRepo.List(ctx, filter, paging)
 }
+
+func (uc *comicUseCase) SearchComic(ctx context.Context, keyword string, paging *common.Paging) ([]*entities.Comic, error) {
+	return uc.comicRepo.SearchComic(ctx, keyword, paging)
+}
