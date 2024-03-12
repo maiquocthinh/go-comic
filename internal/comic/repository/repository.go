@@ -20,4 +20,5 @@ func NewComicRepository(db *sqlx.DB) *comicRepo {
 type Repository interface {
 	GetComic(ctx context.Context, ID int) (*models.ComicDetail, error)
 	List(ctx context.Context, filter *models.ComicFilter, paging *common.Paging) ([]*entities.Comic, error)
+	GetChapterOfComic(ctx context.Context, comicID, chapterID int) (*models.ChapterDetail, error)
 }

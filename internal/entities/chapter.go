@@ -9,8 +9,9 @@ type ChapterSimple struct {
 }
 type Chapter struct {
 	ChapterSimple
-	ImagesJson string `json:"images" db:"images_json"`
+	ImagesJson string `json:"-" db:"images_json"`
 	ComicID    string `json:"-" db:"comic_id"`
+	Viewed     int    `json:"viewed" db:"viewed"`
 	FolderPath string `json:"-" db:"folder_path"`
 	OriginLink string `json:"-" db:"origin_link"`
 	IsUploaded bool   `json:"-" db:"is_uploaded"`
