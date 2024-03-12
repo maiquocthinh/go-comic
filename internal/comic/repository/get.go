@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"database/sql"
-
 	"github.com/maiquocthinh/go-comic/internal/comic/models"
 	"github.com/maiquocthinh/go-comic/pkg/common"
 )
@@ -64,4 +63,28 @@ func (repo *comicRepo) GetComic(ctx context.Context, ID int) (*models.ComicDetai
 	}
 
 	return &comicDetail, nil
+}
+
+func (repo *comicRepo) GetChapterOfComic(ctx context.Context, comicID, chapterID int) (*models.ChapterDetail, error) {
+	var chapterDetail models.ChapterDetail
+
+	err := repo.db.GetContext(
+		ctx,
+		&chapterDetail,
+		"SELECT * FROM chapters WHERE id = ? AND comic_id = ?",
+		chapterID,
+		comicID,
+	)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, common.NewInternalApiError(err, "Chapter not found.")
+		}
+		return nil, err
+	}
+
+	if err := chapterDetail.ParseImages(); err != nil {
+		return nil, err
+	}
+
+	return &chapterDetail, nil
 }

@@ -47,9 +47,9 @@ func (h *comicHandlers) List() gin.HandlerFunc {
 
 func (h *comicHandlers) GetComic() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		id, err := strconv.Atoi(ctx.Param("id"))
+		id, err := strconv.Atoi(ctx.Param("comicID"))
 		if err != nil {
-			panic(common.NewBadRequestApiError(err, "`id` must be int"))
+			panic(common.NewBadRequestApiError(err, "`comicID` must be int"))
 		}
 
 		comicDetail, err := h.comicUseCase.GetComic(ctx.Request.Context(), id)
@@ -58,5 +58,25 @@ func (h *comicHandlers) GetComic() gin.HandlerFunc {
 		}
 
 		ctx.JSON(http.StatusOK, common.SimpleSuccessResponse(&comicDetail))
+	}
+}
+
+func (h *comicHandlers) GetChapterOfComic() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		comicID, err := strconv.Atoi(ctx.Param("comicID"))
+		if err != nil {
+			panic(common.NewBadRequestApiError(err, "`comicID` must be int"))
+		}
+		chapterID, err := strconv.Atoi(ctx.Param("chapterID"))
+		if err != nil {
+			panic(common.NewBadRequestApiError(err, "`chapterID` must be int"))
+		}
+
+		chapterDetail, err := h.comicUseCase.GetChapterOfComic(ctx.Request.Context(), comicID, chapterID)
+		if err != nil {
+			panic(err)
+		}
+
+		ctx.JSON(http.StatusOK, common.SimpleSuccessResponse(chapterDetail))
 	}
 }
