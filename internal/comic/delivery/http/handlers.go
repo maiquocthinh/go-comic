@@ -1,6 +1,7 @@
 package http
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 
@@ -78,5 +79,30 @@ func (h *comicHandlers) GetChapterOfComic() gin.HandlerFunc {
 		}
 
 		ctx.JSON(http.StatusOK, common.SimpleSuccessResponse(chapterDetail))
+	}
+}
+
+func (h *comicHandlers) SearchComic() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		var search models.ComicSearch
+		var paging common.Paging
+
+		if err := ctx.BindQuery(&search); err != nil || search.Keyword == "" {
+			panic(common.NewBadRequestApiError(
+				errors.New("`keyword` must not empty"),
+				"`keyword` must not empty",
+			))
+		}
+
+		if err := ctx.BindQuery(&paging); err != nil {
+			panic(common.NewBadRequestApiError(err, ""))
+		}
+
+		listComic, err := h.comicUseCase.SearchComic(ctx.Request.Context(), search.Keyword, &paging)
+		if err != nil {
+			panic(err)
+		}
+
+		ctx.JSON(http.StatusOK, common.NewSuccessResponse(listComic, paging))
 	}
 }

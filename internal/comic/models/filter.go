@@ -28,3 +28,7 @@ type ComicFilter struct {
 	SortBy     ComicSortBy `json:"sort_by" form:"sort_by" db:"sort_by"`
 	Sort       int         `json:"sort" form:"sort" db:"sort"`
 }
+
+type ComicSearch struct {
+	Keyword string `json:"-" form:"keyword" binding:"required"`
+}
