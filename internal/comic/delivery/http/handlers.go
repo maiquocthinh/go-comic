@@ -22,6 +22,8 @@ func NewComicHandlers(comicUseCase usecase.ComicUseCase) *comicHandlers {
 type ComicHandlers interface {
 	List() gin.HandlerFunc
 	GetComic() gin.HandlerFunc
+	GetChapterOfComic() gin.HandlerFunc
+	SearchComic() gin.HandlerFunc
 }
 
 func (h *comicHandlers) List() gin.HandlerFunc {
@@ -58,7 +60,7 @@ func (h *comicHandlers) GetComic() gin.HandlerFunc {
 			panic(err)
 		}
 
-		ctx.JSON(http.StatusOK, common.SimpleSuccessResponse(&comicDetail))
+		ctx.JSON(http.StatusOK, common.SimpleDataSuccessResponse(&comicDetail))
 	}
 }
 
@@ -78,7 +80,7 @@ func (h *comicHandlers) GetChapterOfComic() gin.HandlerFunc {
 			panic(err)
 		}
 
-		ctx.JSON(http.StatusOK, common.SimpleSuccessResponse(chapterDetail))
+		ctx.JSON(http.StatusOK, common.SimpleDataSuccessResponse(chapterDetail))
 	}
 }
 
