@@ -33,7 +33,7 @@ func main() {
 
 	// start server
 	gin.SetMode(gin.ReleaseMode)
-	s := server.NewServer(cfg, mysqlDB)
+	s := server.NewServer(cfg, mysqlDB, redisClient)
 	if err = s.Run(); err != nil {
 		log.Fatal(err)
 	}
