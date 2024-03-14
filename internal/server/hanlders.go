@@ -7,6 +7,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/maiquocthinh/go-comic/internal/middleware"
 
+	authHttp "github.com/maiquocthinh/go-comic/internal/auth/delivery/http"
+	authRepository "github.com/maiquocthinh/go-comic/internal/auth/repository"
+	authUseCase "github.com/maiquocthinh/go-comic/internal/auth/usecase"
+
 	comicHttp "github.com/maiquocthinh/go-comic/internal/comic/delivery/http"
 	comicRepository "github.com/maiquocthinh/go-comic/internal/comic/repository"
 	comicUseCase "github.com/maiquocthinh/go-comic/internal/comic/usecase"
@@ -15,12 +19,15 @@ import (
 func (s *Server) mapHandlers() error {
 
 	// Init repositories
+	authRepo := authRepository.NewAuthRepository(s.mysqlDB)
 	comicRepo := comicRepository.NewComicRepository(s.mysqlDB)
 
 	// Init useCases
+	authUC := authUseCase.NewAuthUseCase(authRepo)
 	comicUC := comicUseCase.NewComicUseCase(comicRepo)
 
 	// Init handlers
+	authHandlers := authHttp.NewComicHandlers(authUC)
 	comicHandlers := comicHttp.NewComicHandlers(comicUC)
 
 	// Use middleware
@@ -28,6 +35,9 @@ func (s *Server) mapHandlers() error {
 
 	// Map Handlers
 	v1 := s.gin.Group("/api/v1")
+
+	authRoutes := v1.Group("/auth")
+	authHandlers.MapComicRotes(authRoutes)
 
 	comicRoutes := v1.Group("/comics")
 	comicHandlers.MapComicRotes(comicRoutes)

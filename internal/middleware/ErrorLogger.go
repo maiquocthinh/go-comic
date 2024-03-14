@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"log"
+	"net/http"
 	"net/http/httputil"
 	"os"
 	"runtime"
@@ -70,6 +71,10 @@ func ErrorLogger() gin.HandlerFunc {
 				// parse error
 				var errCause, errMsg string
 				if apiErr, ok := err.(*common.ApiError); ok {
+					// skip log if bad request error
+					if apiErr.StatusCode == http.StatusBadRequest {
+						return
+					}
 					errCause = apiErr.Error()
 					errMsg = apiErr.Message
 				} else {
