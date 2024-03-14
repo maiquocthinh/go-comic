@@ -1,11 +1,11 @@
 package main
 
 import (
-	"log"
-
 	"github.com/maiquocthinh/go-comic/config"
 	"github.com/maiquocthinh/go-comic/internal/server"
 	"github.com/maiquocthinh/go-comic/pkg/db/mysql"
+	"github.com/maiquocthinh/go-comic/pkg/db/redis"
+	"log"
 )
 
 func main() {
@@ -26,8 +26,11 @@ func main() {
 	}
 	defer mysqlDB.Close()
 
+	// new redis client
+	redisClient := redis.NewRedisClient(&cfg.Redis)
+
 	// start server
-	s := server.NewServer(cfg, mysqlDB)
+	s := server.NewServer(cfg, mysqlDB, redisClient)
 	if err = s.Run(); err != nil {
 		log.Fatal(err)
 	}

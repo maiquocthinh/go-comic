@@ -12,6 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
 	"github.com/maiquocthinh/go-comic/config"
+	"github.com/redis/go-redis/v9"
 	"github.com/sirupsen/logrus"
 )
 
@@ -21,18 +22,20 @@ const (
 )
 
 type Server struct {
-	gin     *gin.Engine
-	config  *config.Config
-	mysqlDB *sqlx.DB
-	logger  *logrus.Logger
+	gin         *gin.Engine
+	config      *config.Config
+	mysqlDB     *sqlx.DB
+	redisClient *redis.Client
+	logger      *logrus.Logger
 }
 
-func NewServer(cfg *config.Config, mysqlDB *sqlx.DB) *Server {
+func NewServer(cfg *config.Config, mysqlDB *sqlx.DB, redisClient *redis.Client) *Server {
 	return &Server{
-		gin:     gin.Default(),
-		config:  cfg,
-		mysqlDB: mysqlDB,
-		logger:  logrus.New(),
+		gin:         gin.Default(),
+		config:      cfg,
+		mysqlDB:     mysqlDB,
+		redisClient: redisClient,
+		logger:      logrus.New(),
 	}
 }
 

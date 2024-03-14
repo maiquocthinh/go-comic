@@ -11,3 +11,10 @@ MySQL:
   Password: 
   DBName: nettruyen
   DriverName: mysql
+
+  Redis:
+    Addr: localhost:6379
+    Password:
+    DB: 0
+    PoolSize: 300
+    PoolTimeout: 240
