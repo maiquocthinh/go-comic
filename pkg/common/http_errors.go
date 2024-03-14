@@ -5,9 +5,10 @@ import (
 )
 
 type ApiError struct {
-	StatusCode int    `json:"-"`
-	RootErr    error  `json:"-"`
-	Message    string `json:"message"`
+	StatusCode int         `json:"-"`
+	RootErr    error       `json:"-"`
+	Message    string      `json:"message"`
+	Causes     interface{} `json:"causes,omitempty"`
 }
 
 func (e *ApiError) RootError() error {
@@ -53,6 +54,19 @@ func NewBadRequestApiError(err error, message string) *ApiError {
 		StatusCode: http.StatusBadRequest,
 		RootErr:    err,
 		Message:    message,
+	}
+}
+
+func NewBadRequestApiErrorWithCause(err error, message string, causes interface{}) *ApiError {
+	if message == "" {
+		message = "Bad Request Error"
+	}
+
+	return &ApiError{
+		StatusCode: http.StatusBadRequest,
+		RootErr:    err,
+		Message:    message,
+		Causes:     causes,
 	}
 }
 

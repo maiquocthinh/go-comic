@@ -1,7 +1,6 @@
 package http
 
 import (
-	"errors"
 	"net/http"
 	"strconv"
 
@@ -32,11 +31,14 @@ func (h *comicHandlers) List() gin.HandlerFunc {
 		var filter models.ComicFilter
 
 		if err := ctx.BindQuery(&paging); err != nil {
-			panic(common.NewBadRequestApiError(err, ""))
+			common.HandleBindingErr(ctx, err)
+			return
+
 		}
 
 		if err := ctx.BindQuery(&filter); err != nil {
-			panic(common.NewBadRequestApiError(err, ""))
+			common.HandleBindingErr(ctx, err)
+			return
 		}
 
 		listComic, err := h.comicUseCase.List(ctx.Request.Context(), &filter, &paging)
@@ -90,14 +92,13 @@ func (h *comicHandlers) SearchComic() gin.HandlerFunc {
 		var paging common.Paging
 
 		if err := ctx.BindQuery(&search); err != nil || search.Keyword == "" {
-			panic(common.NewBadRequestApiError(
-				errors.New("`keyword` must not empty"),
-				"`keyword` must not empty",
-			))
+			common.HandleBindingErr(ctx, err)
+			return
 		}
 
 		if err := ctx.BindQuery(&paging); err != nil {
-			panic(common.NewBadRequestApiError(err, ""))
+			common.HandleBindingErr(ctx, err)
+			return
 		}
 
 		listComic, err := h.comicUseCase.SearchComic(ctx.Request.Context(), search.Keyword, &paging)

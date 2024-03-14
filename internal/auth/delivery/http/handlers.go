@@ -26,7 +26,8 @@ func (h *authHandlers) Register() gin.HandlerFunc {
 		var userRegister models.UserRegister
 
 		if err := ctx.BindJSON(&userRegister); err != nil {
-			panic(common.NewBadRequestApiError(err, ""))
+			common.HandleBindingErr(ctx, err)
+			return
 		}
 
 		if err := h.authUseCase.Register(ctx.Request.Context(), &userRegister); err != nil {
@@ -42,7 +43,8 @@ func (h *authHandlers) Login() gin.HandlerFunc {
 		var userLogin models.UserLogin
 
 		if err := ctx.BindJSON(&userLogin); err != nil {
-			panic(common.NewBadRequestApiError(err, ""))
+			common.HandleBindingErr(ctx, err)
+			return
 		}
 
 		token, err := h.authUseCase.Login(ctx.Request.Context(), &userLogin)
