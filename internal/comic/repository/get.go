@@ -45,7 +45,7 @@ func (repo *comicRepo) GetComic(ctx context.Context, ID int) (*models.ComicDetai
 	// Query
 	if err = comicStmt.Get(&comicDetail, ID); err != nil {
 		if err == sql.ErrNoRows {
-			return nil, common.NewNotFoundApiError(err, "Not found Comic")
+			return nil, common.NewNotFoundApiError(err, "Comic not found")
 		}
 		return nil, err
 	}

@@ -10,10 +10,10 @@ import (
 
 func (uc *comicUseCase) List(ctx context.Context, filter *models.ComicFilter, paging *common.Paging) ([]*entities.Comic, error) {
 	paging.Fulfill()
-
 	return uc.comicRepo.List(ctx, filter, paging)
 }
 
 func (uc *comicUseCase) SearchComic(ctx context.Context, keyword string, paging *common.Paging) ([]*entities.Comic, error) {
+	paging.Fulfill()
 	return uc.comicRepo.SearchComic(ctx, keyword, paging)
 }
