@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/gin-gonic/gin"
 	"log"
 
 	"github.com/maiquocthinh/go-comic/config"
@@ -27,6 +28,7 @@ func main() {
 	defer mysqlDB.Close()
 
 	// start server
+	gin.SetMode(gin.ReleaseMode)
 	s := server.NewServer(cfg, mysqlDB)
 	if err = s.Run(); err != nil {
 		log.Fatal(err)
