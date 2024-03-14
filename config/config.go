@@ -11,6 +11,7 @@ import (
 type Config struct {
 	Server ServerConfig
 	MySQL  MySQLConfig
+	Redis  RedisConfig
 }
 
 type ServerConfig struct {
@@ -27,6 +28,14 @@ type MySQLConfig struct {
 	Password   string
 	DBName     string
 	DriverName string
+}
+
+type RedisConfig struct {
+	Addr        string
+	Password    string
+	DB          int
+	PoolSize    int
+	PoolTimeout int
 }
 
 func NewConfig(filename string) (*Config, error) {

@@ -7,6 +7,7 @@ import (
 	"github.com/maiquocthinh/go-comic/config"
 	"github.com/maiquocthinh/go-comic/internal/server"
 	"github.com/maiquocthinh/go-comic/pkg/db/mysql"
+	"github.com/maiquocthinh/go-comic/pkg/db/redis"
 )
 
 func main() {
@@ -26,6 +27,9 @@ func main() {
 		log.Printf("MySQL connected, Status: %#v\n", mysqlDB.Stats())
 	}
 	defer mysqlDB.Close()
+
+	// new redis client
+	redisClient := redis.NewRedisClient(&cfg.Redis)
 
 	// start server
 	gin.SetMode(gin.ReleaseMode)
