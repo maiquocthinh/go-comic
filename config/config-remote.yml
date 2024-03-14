@@ -5,9 +5,15 @@ Server:
   JwtSecretKey: B5bJHoI8aVLjAAeV
 
 MySQL:
-  Host: bnjsdjmyfiuggbvdrwqd-mysql.services.clever-cloud.com
-  Port: 3306
-  Username: uqlzhbyuhhtr7nhp
-  Password: Xe7mnphtx0o4DBXhn8l3
-  DBName: bnjsdjmyfiuggbvdrwqd
+#  Host: bnjsdjmyfiuggbvdrwqd-mysql.services.clever-cloud.com
+#  Port: 3306
+#  Username: uqlzhbyuhhtr7nhp
+#  Password: Xe7mnphtx0o4DBXhn8l3
+#  DBName: bnjsdjmyfiuggbvdrwqd
+#  DriverName: mysql
+  Host: gateway01.ap-southeast-1.prod.aws.tidbcloud.com
+  Port: 4000
+  Username: 48mM87i9c6HEevz.root
+  Password: 1Q2vDXNntnesph64
+  DBName: nettruyen
   DriverName: mysql
