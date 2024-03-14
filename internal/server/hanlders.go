@@ -23,7 +23,7 @@ func (s *Server) mapHandlers() error {
 	comicRepo := comicRepository.NewComicRepository(s.mysqlDB)
 
 	// Init useCases
-	authUC := authUseCase.NewAuthUseCase(authRepo)
+	authUC := authUseCase.NewAuthUseCase(s.config, authRepo)
 	comicUC := comicUseCase.NewComicUseCase(comicRepo)
 
 	// Init handlers
