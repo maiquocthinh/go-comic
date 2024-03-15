@@ -3,6 +3,7 @@ Server:
   ReadTimeout: 5
   WriteTimeout: 5
   JwtSecretKey: B5bJHoI8aVLjAAeV
+  JwtUserExpiration: 604800 # 7 days
 
 MySQL:
 #  Host: bnjsdjmyfiuggbvdrwqd-mysql.services.clever-cloud.com
