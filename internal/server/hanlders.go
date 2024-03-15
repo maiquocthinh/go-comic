@@ -14,6 +14,10 @@ import (
 	comicHttp "github.com/maiquocthinh/go-comic/internal/comic/delivery/http"
 	comicRepository "github.com/maiquocthinh/go-comic/internal/comic/repository"
 	comicUseCase "github.com/maiquocthinh/go-comic/internal/comic/usecase"
+
+	userHttp "github.com/maiquocthinh/go-comic/internal/user/delivery/http"
+	userRepository "github.com/maiquocthinh/go-comic/internal/user/repository"
+	userUseCase "github.com/maiquocthinh/go-comic/internal/user/usecase"
 )
 
 func (s *Server) mapHandlers() error {
@@ -22,10 +26,12 @@ func (s *Server) mapHandlers() error {
 	authRepo := authRepository.NewAuthRepository(s.mysqlDB)
 	authRedisRepo := authRepository.NewAuthRedisRepository(s.redisClient)
 	comicRepo := comicRepository.NewComicRepository(s.mysqlDB)
+	userRepo := userRepository.NewUserRepository(s.mysqlDB)
 
 	// Init useCases
 	authUC := authUseCase.NewAuthUseCase(s.config, authRepo, authRedisRepo)
 	comicUC := comicUseCase.NewComicUseCase(comicRepo)
+	usercUC := userUseCase.NewUserUseCase(userRepo)
 
 	// New middleware manager
 	middlewareManager := middleware.NewMiddlewareManager(s.config)
@@ -33,6 +39,7 @@ func (s *Server) mapHandlers() error {
 	// Init handlers
 	authHandlers := authHttp.NewComicHandlers(middlewareManager, authUC)
 	comicHandlers := comicHttp.NewComicHandlers(comicUC)
+	userHandlers := userHttp.NewUserHandlers(middlewareManager, usercUC)
 
 	// Use middleware
 	s.gin.Use(middleware.ErrorLogger(), middleware.Recovery()) // don't change order
@@ -45,6 +52,9 @@ func (s *Server) mapHandlers() error {
 
 	comicRoutes := v1.Group("/comics")
 	comicHandlers.MapComicRotes(comicRoutes)
+
+	userRoutes := v1.Group("/user")
+	userHandlers.MapComicRotes(userRoutes)
 
 	s.gin.GET("/ping", func(ctx *gin.Context) {
 		if err := s.mysqlDB.Ping(); err != nil {

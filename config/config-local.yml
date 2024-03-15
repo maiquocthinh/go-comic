@@ -13,10 +13,10 @@ MySQL:
   DBName: nettruyen
   DriverName: mysql
 
-  Redis:
-    Addr: localhost:6379
-    Username:
-    Password:
-    DB: 0
-    PoolSize: 300
-    PoolTimeout: 240
+Redis:
+  Addr: localhost:6379
+  Username:
+  Password:
+  DB: 0
+  PoolSize: 300
+  PoolTimeout: 240
