@@ -20,14 +20,18 @@ func (s *Server) mapHandlers() error {
 
 	// Init repositories
 	authRepo := authRepository.NewAuthRepository(s.mysqlDB)
+	authRedisRepo := authRepository.NewAuthRedisRepository(s.redisClient)
 	comicRepo := comicRepository.NewComicRepository(s.mysqlDB)
 
 	// Init useCases
-	authUC := authUseCase.NewAuthUseCase(s.config, authRepo)
+	authUC := authUseCase.NewAuthUseCase(s.config, authRepo, authRedisRepo)
 	comicUC := comicUseCase.NewComicUseCase(comicRepo)
 
+	// New middleware manager
+	middlewareManager := middleware.NewMiddlewareManager(s.config)
+
 	// Init handlers
-	authHandlers := authHttp.NewComicHandlers(authUC)
+	authHandlers := authHttp.NewComicHandlers(middlewareManager, authUC)
 	comicHandlers := comicHttp.NewComicHandlers(comicUC)
 
 	// Use middleware

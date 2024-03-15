@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"errors"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"github.com/maiquocthinh/go-comic/config"
@@ -35,7 +36,7 @@ func GenerateJWTForUser(user *entities.User, cfg *config.ServerConfig) (string, 
 		},
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &claims)
 
 	tokenSigned, err := token.SignedString([]byte(cfg.JwtSecretKey))
 	if err != nil {
@@ -43,4 +44,21 @@ func GenerateJWTForUser(user *entities.User, cfg *config.ServerConfig) (string, 
 	}
 
 	return tokenSigned, nil
+}
+
+func ParseJWTOfUser(tokenString string, cfg *config.ServerConfig) (*UserTokenClaims, error) {
+	var claims UserTokenClaims
+
+	token, err := jwt.ParseWithClaims(tokenString, &claims, func(token *jwt.Token) (interface{}, error) {
+		return []byte(cfg.JwtSecretKey), nil
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	if !token.Valid {
+		return nil, errors.New("Invalid token")
+	}
+
+	return &claims, nil
 }
