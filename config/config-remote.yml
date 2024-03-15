@@ -17,3 +17,11 @@ MySQL:
   Password: 1Q2vDXNntnesph64
   DBName: nettruyen
   DriverName: mysql
+
+  Redis:
+    Addr: :6379
+    Username: red-cnq0g1v109ks73eca4l0
+    Password:
+    DB: 0
+    PoolSize: 300
+    PoolTimeout: 240
