@@ -15,10 +15,11 @@ type Config struct {
 }
 
 type ServerConfig struct {
-	Port         string
-	ReadTimeout  time.Duration
-	WriteTimeout time.Duration
-	JwtSecretKey string
+	Port              string
+	ReadTimeout       time.Duration
+	WriteTimeout      time.Duration
+	JwtSecretKey      string
+	JwtUserExpiration int // second
 }
 
 type MySQLConfig struct {

@@ -10,12 +10,14 @@ import (
 func (uc *authUseCase) Login(ctx context.Context, userLogin *models.UserLogin) (string, error) {
 	user, err := uc.authRepo.GetUserByEmail(ctx, userLogin.Email)
 	if err != nil {
-		return "", common.NewUnauthorizedApiError(err, "Email or Password wrong!")
+		return "", err
 	}
 
 	if err := utils.ComparePassword(user.HashPassword, userLogin.Password); err != nil {
 		return "", common.NewUnauthorizedApiError(err, "Email or Password wrong!")
 	}
 
-	return "jwt of user", nil
+	token, err := utils.GenerateJWTForUser(user, &uc.cfg.Server)
+
+	return token, nil
 }
