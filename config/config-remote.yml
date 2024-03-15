@@ -20,9 +20,9 @@ MySQL:
   DriverName: mysql
 
   Redis:
-    Addr: :6379
+    Addr: singapore-redis.render.com:6379
     Username: red-cnq0g1v109ks73eca4l0
-    Password:
+    Password: gL0kKXmORbs5jmFcdndpSH0mLJo1Zj6j
     DB: 0
     PoolSize: 300
     PoolTimeout: 240
