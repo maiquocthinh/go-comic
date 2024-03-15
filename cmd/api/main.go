@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"github.com/maiquocthinh/go-comic/config"
 	"github.com/maiquocthinh/go-comic/internal/server"
 	"github.com/maiquocthinh/go-comic/pkg/db/mysql"
@@ -28,6 +29,12 @@ func main() {
 
 	// new redis client
 	redisClient := redis.NewRedisClient(&cfg.Redis)
+	if _, err := redisClient.Ping(context.Background()).Result(); err != nil {
+		log.Printf("Redis connect fail: %s\n", err.Error())
+	} else {
+		log.Println("Redis connected.")
+	}
+	defer redisClient.Close()
 
 	// start server
 	s := server.NewServer(cfg, mysqlDB, redisClient)

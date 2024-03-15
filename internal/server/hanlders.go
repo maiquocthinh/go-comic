@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -57,14 +58,24 @@ func (s *Server) mapHandlers() error {
 	userHandlers.MapComicRotes(userRoutes)
 
 	s.gin.GET("/ping", func(ctx *gin.Context) {
+		status := make(map[string]string)
+
+		// check health of mysql
 		if err := s.mysqlDB.Ping(); err != nil {
-			ctx.JSON(http.StatusInternalServerError, &gin.H{
-				"Message": fmt.Sprintf("MySQL Error: %s", err.Error()),
-			})
-			return
+			status["Mysql"] = fmt.Sprintf("MySQL connection error: %s", err.Error())
+		} else {
+			status["Mysql"] = "MySQL connection OK"
 		}
-		ctx.JSON(http.StatusInternalServerError, &gin.H{
-			"Message": "Mysql connected success",
+
+		// check health of redis
+		if _, err := s.redisClient.Ping(context.Background()).Result(); err != nil {
+			status["Redis"] = fmt.Sprintf("Redis connection error: %s", err.Error())
+		} else {
+			status["Redis"] = "Redis connection OK"
+		}
+
+		ctx.JSON(http.StatusOK, &gin.H{
+			"Status": status,
 		})
 	})
 
