@@ -15,6 +15,7 @@ MySQL:
 
   Redis:
     Addr: localhost:6379
+    Username:
     Password:
     DB: 0
     PoolSize: 300
