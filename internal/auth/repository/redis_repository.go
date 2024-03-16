@@ -24,5 +24,9 @@ func (repo *authRedisRepo) AddTokenToBlackList(ctx context.Context, jti string, 
 }
 
 func (repo *authRedisRepo) IsTokenInBlackList(ctx context.Context, jti string) (bool, error) {
-	return repo.redisClient.Get(ctx, jti).Bool()
+	exists, err := repo.redisClient.Exists(ctx, jti).Result()
+	if err != nil {
+		return false, err
+	}
+	return exists == 1, nil
 }

@@ -35,7 +35,7 @@ func (s *Server) mapHandlers() error {
 	usercUC := userUseCase.NewUserUseCase(userRepo)
 
 	// New middleware manager
-	middlewareManager := middleware.NewMiddlewareManager(s.config)
+	middlewareManager := middleware.NewMiddlewareManager(s.config, authRedisRepo)
 
 	// Init handlers
 	authHandlers := authHttp.NewComicHandlers(middlewareManager, authUC)

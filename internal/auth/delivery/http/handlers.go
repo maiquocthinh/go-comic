@@ -1,7 +1,6 @@
 package http
 
 import (
-	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/maiquocthinh/go-comic/internal/auth/models"
 	"github.com/maiquocthinh/go-comic/internal/auth/usecase"
@@ -68,14 +67,9 @@ func (h *authHandlers) Login() gin.HandlerFunc {
 
 func (h *authHandlers) Logout() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		claims, exists := ctx.Get(middleware.KeyUserClaims)
-		if !exists {
-			panic(common.NewUnauthorizedApiError(errors.New("Invalid token"), ""))
-		}
-
-		userClaims, ok := claims.(*utils.UserTokenClaims)
-		if !ok {
-			panic(common.NewUnauthorizedApiError(errors.New("Invalid token"), ""))
+		userClaims, err := utils.GetUserTokenClaimsFromContext(ctx)
+		if err != nil {
+			panic(common.NewUnauthorizedApiError(err, ""))
 		}
 
 		if err := h.authUseCase.Logout(ctx.Request.Context(), userClaims); err != nil {
