@@ -2,10 +2,12 @@ package utils
 
 import (
 	"errors"
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"github.com/maiquocthinh/go-comic/config"
 	"github.com/maiquocthinh/go-comic/internal/entities"
+	"github.com/maiquocthinh/go-comic/pkg/common"
 	"time"
 )
 
@@ -61,4 +63,18 @@ func ParseJWTOfUser(tokenString string, cfg *config.ServerConfig) (*UserTokenCla
 	}
 
 	return &claims, nil
+}
+
+func GetUserTokenClaimsFromContext(ctx *gin.Context) (*UserTokenClaims, error) {
+	claims, exists := ctx.Get(common.KeyUserClaims)
+	if !exists {
+		return nil, errors.New("Invalid token")
+	}
+
+	userClaims, ok := claims.(*UserTokenClaims)
+	if !ok {
+		return nil, errors.New("Invalid token")
+	}
+
+	return userClaims, nil
 }

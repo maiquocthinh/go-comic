@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -14,6 +15,10 @@ import (
 	comicHttp "github.com/maiquocthinh/go-comic/internal/comic/delivery/http"
 	comicRepository "github.com/maiquocthinh/go-comic/internal/comic/repository"
 	comicUseCase "github.com/maiquocthinh/go-comic/internal/comic/usecase"
+
+	userHttp "github.com/maiquocthinh/go-comic/internal/user/delivery/http"
+	userRepository "github.com/maiquocthinh/go-comic/internal/user/repository"
+	userUseCase "github.com/maiquocthinh/go-comic/internal/user/usecase"
 )
 
 func (s *Server) mapHandlers() error {
@@ -22,17 +27,20 @@ func (s *Server) mapHandlers() error {
 	authRepo := authRepository.NewAuthRepository(s.mysqlDB)
 	authRedisRepo := authRepository.NewAuthRedisRepository(s.redisClient)
 	comicRepo := comicRepository.NewComicRepository(s.mysqlDB)
+	userRepo := userRepository.NewUserRepository(s.mysqlDB)
 
 	// Init useCases
 	authUC := authUseCase.NewAuthUseCase(s.config, authRepo, authRedisRepo)
 	comicUC := comicUseCase.NewComicUseCase(comicRepo)
+	usercUC := userUseCase.NewUserUseCase(userRepo)
 
 	// New middleware manager
-	middlewareManager := middleware.NewMiddlewareManager(s.config)
+	middlewareManager := middleware.NewMiddlewareManager(s.config, authRedisRepo)
 
 	// Init handlers
 	authHandlers := authHttp.NewComicHandlers(middlewareManager, authUC)
 	comicHandlers := comicHttp.NewComicHandlers(comicUC)
+	userHandlers := userHttp.NewUserHandlers(middlewareManager, usercUC)
 
 	// Use middleware
 	s.gin.Use(middleware.ErrorLogger(), middleware.Recovery()) // don't change order
@@ -46,15 +54,28 @@ func (s *Server) mapHandlers() error {
 	comicRoutes := v1.Group("/comics")
 	comicHandlers.MapComicRotes(comicRoutes)
 
+	userRoutes := v1.Group("/user")
+	userHandlers.MapComicRotes(userRoutes)
+
 	s.gin.GET("/ping", func(ctx *gin.Context) {
+		status := make(map[string]string)
+
+		// check health of mysql
 		if err := s.mysqlDB.Ping(); err != nil {
-			ctx.JSON(http.StatusInternalServerError, &gin.H{
-				"Message": fmt.Sprintf("MySQL Error: %s", err.Error()),
-			})
-			return
+			status["Mysql"] = fmt.Sprintf("MySQL connection error: %s", err.Error())
+		} else {
+			status["Mysql"] = "MySQL connection OK"
 		}
-		ctx.JSON(http.StatusInternalServerError, &gin.H{
-			"Message": "Mysql connected success",
+
+		// check health of redis
+		if _, err := s.redisClient.Ping(context.Background()).Result(); err != nil {
+			status["Redis"] = fmt.Sprintf("Redis connection error: %s", err.Error())
+		} else {
+			status["Redis"] = "Redis connection OK"
+		}
+
+		ctx.JSON(http.StatusOK, &gin.H{
+			"Status": status,
 		})
 	})
 

@@ -8,10 +8,6 @@ import (
 	"strings"
 )
 
-const (
-	KeyUserClaims = "UserClaims"
-)
-
 func (mm *middlewareManager) AuthJWTMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		bearerHeader := ctx.Request.Header.Get("Authorization")
@@ -30,7 +26,22 @@ func (mm *middlewareManager) AuthJWTMiddleware() gin.HandlerFunc {
 			panic(common.NewUnauthorizedApiError(err, ""))
 		}
 
-		ctx.Set(KeyUserClaims, userClaims)
+		ctx.Set(common.KeyUserClaims, userClaims)
+
+		ctx.Next()
+	}
+}
+
+func (mm *middlewareManager) VerifyJWTMiddleware() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		userClaims, err := utils.GetUserTokenClaimsFromContext(ctx)
+		if err != nil {
+			panic(common.NewUnauthorizedApiError(err, ""))
+		}
+
+		if inBlackList, err := mm.authRedisRepo.IsTokenInBlackList(ctx.Request.Context(), userClaims.ID); err != nil || inBlackList {
+			panic(common.NewUnauthorizedApiError(errors.New("Invalid token"), ""))
+		}
 
 		ctx.Next()
 	}
