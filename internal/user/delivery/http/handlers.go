@@ -1,6 +1,7 @@
 package http
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/maiquocthinh/go-comic/internal/middleware"
 	"github.com/maiquocthinh/go-comic/internal/user/models"
@@ -8,6 +9,7 @@ import (
 	"github.com/maiquocthinh/go-comic/pkg/common"
 	"github.com/maiquocthinh/go-comic/pkg/utils"
 	"net/http"
+	"strings"
 )
 
 type userHandlers struct {
@@ -25,6 +27,7 @@ func NewUserHandlers(mm middleware.MiddlewareManager, userUseCase usecase.UserUs
 type UserHandlers interface {
 	GetProfile() gin.HandlerFunc
 	UpdateProfile() gin.HandlerFunc
+	UpdateAvatar() gin.HandlerFunc
 	ChangePassword() gin.HandlerFunc
 	GetComments() gin.HandlerFunc
 }
@@ -67,6 +70,34 @@ func (h *userHandlers) UpdateProfile() gin.HandlerFunc {
 		}
 
 		ctx.JSON(http.StatusOK, common.SimpleSuccessResponse(user, "Update Profile success."))
+	}
+}
+
+func (h *userHandlers) UpdateAvatar() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		fileHeader, err := ctx.FormFile("file")
+		if err != nil {
+			panic(common.NewBadRequestApiError(err, ""))
+		}
+
+		filetype := fileHeader.Header.Get("Content-Type")
+		if !strings.HasPrefix(filetype, "image/") {
+			panic(common.NewBadRequestApiError(errors.New("Only image file are allowed"), ""))
+		}
+
+		userClaims, err := utils.GetUserTokenClaimsFromContext(ctx)
+		userAvatarUpdate := models.UserAvatarUpdate{
+			ID:         userClaims.UserID,
+			Username:   userClaims.Username,
+			Avatar:     userClaims.Avatar,
+			FileHeader: fileHeader,
+		}
+
+		if err := h.userUseCase.UpdateAvatar(ctx.Request.Context(), &userAvatarUpdate); err != nil {
+			panic(err)
+		}
+
+		ctx.JSON(http.StatusOK, common.SimpleDataSuccessResponse(&userAvatarUpdate))
 	}
 }
 

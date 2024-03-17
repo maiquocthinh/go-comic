@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/maiquocthinh/go-comic/internal/middleware"
+	"github.com/maiquocthinh/go-comic/pkg/uploadprovider"
 
 	authHttp "github.com/maiquocthinh/go-comic/internal/auth/delivery/http"
 	authRepository "github.com/maiquocthinh/go-comic/internal/auth/repository"
@@ -22,6 +23,8 @@ import (
 )
 
 func (s *Server) mapHandlers() error {
+	// Init providers
+	dropboxProvider := uploadprovider.NewDropboxProvider(&s.config.Dropbox)
 
 	// Init repositories
 	authRepo := authRepository.NewAuthRepository(s.mysqlDB)
@@ -32,7 +35,7 @@ func (s *Server) mapHandlers() error {
 	// Init useCases
 	authUC := authUseCase.NewAuthUseCase(s.config, authRepo, authRedisRepo)
 	comicUC := comicUseCase.NewComicUseCase(comicRepo)
-	usercUC := userUseCase.NewUserUseCase(userRepo)
+	userUC := userUseCase.NewUserUseCase(userRepo, dropboxProvider)
 
 	// New middleware manager
 	middlewareManager := middleware.NewMiddlewareManager(s.config, authRedisRepo)
@@ -40,7 +43,7 @@ func (s *Server) mapHandlers() error {
 	// Init handlers
 	authHandlers := authHttp.NewComicHandlers(middlewareManager, authUC)
 	comicHandlers := comicHttp.NewComicHandlers(comicUC)
-	userHandlers := userHttp.NewUserHandlers(middlewareManager, usercUC)
+	userHandlers := userHttp.NewUserHandlers(middlewareManager, userUC)
 
 	// Use middleware
 	s.gin.Use(middleware.ErrorLogger(), middleware.Recovery()) // don't change order
@@ -60,7 +63,7 @@ func (s *Server) mapHandlers() error {
 	s.gin.GET("/ping", func(ctx *gin.Context) {
 		status := make(map[string]string)
 
-		// check health of mysql
+		// check health of mysql & redis
 		if err := s.mysqlDB.Ping(); err != nil {
 			status["Mysql"] = fmt.Sprintf("MySQL connection error: %s", err.Error())
 		} else {

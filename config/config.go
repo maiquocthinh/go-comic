@@ -9,9 +9,10 @@ import (
 )
 
 type Config struct {
-	Server ServerConfig
-	MySQL  MySQLConfig
-	Redis  RedisConfig
+	Server  ServerConfig
+	MySQL   MySQLConfig
+	Redis   RedisConfig
+	Dropbox DropboxConfig
 }
 
 type ServerConfig struct {
@@ -38,6 +39,12 @@ type RedisConfig struct {
 	DB          int
 	PoolSize    int
 	PoolTimeout int
+}
+
+type DropboxConfig struct {
+	AppKey       string
+	AppSecret    string
+	RefreshToken string
 }
 
 func NewConfig(filename string) (*Config, error) {
