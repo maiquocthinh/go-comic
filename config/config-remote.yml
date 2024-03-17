@@ -20,3 +20,8 @@ Redis:
   DB: 0
   PoolSize: 300
   PoolTimeout: 240
+
+Dropbox:
+  AppKey: 22fbmanjs9dvpqs
+  AppSecret: gy41e9xmgjpk9k4
+  RefreshToken: acUDBMzDdCkAAAAAAAAAAZFUJhpo2VYMfdxefDZ0qVGvnENZEJC5um8NFkHSLEuV
