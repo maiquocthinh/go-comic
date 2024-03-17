@@ -7,6 +7,7 @@ import (
 	"github.com/maiquocthinh/go-comic/internal/entities"
 	"github.com/maiquocthinh/go-comic/internal/user/models"
 	"github.com/maiquocthinh/go-comic/pkg/common"
+	"github.com/maiquocthinh/go-comic/pkg/utils"
 	"io"
 	"path"
 	"path/filepath"
@@ -54,6 +55,8 @@ func (uc *userUseCase) UpdateAvatar(ctx context.Context, userAvatarUpdate *model
 	if err != nil {
 		return common.NewInternalApiError(err, "")
 	}
+
+	userAvatarUpdate.Avatar = utils.DropboxShareLinkToDirectLink(userAvatarUpdate.Avatar)
 
 	// update avatar
 	if err := uc.userRepo.UpdateAvatar(ctx, userAvatarUpdate); err != nil {
