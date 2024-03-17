@@ -1,5 +1,7 @@
 package models
 
+import "mime/multipart"
+
 type UserProfileUpdate struct {
 	ID        int     `json:"-" db:"id"`
 	FirstName *string `json:"first_name" db:"first_name" binding:"omitempty,gte=2"`
@@ -12,4 +14,11 @@ func (p *UserProfileUpdate) Validate() bool {
 		return false
 	}
 	return true
+}
+
+type UserAvatarUpdate struct {
+	ID         int                   `json:"-" db:"id"`
+	Username   string                `json:"-" db:"username"`
+	Avatar     string                `json:"avatar" db:"avatar"`
+	FileHeader *multipart.FileHeader `json:"-"`
 }

@@ -23,3 +23,11 @@ func (repo *userRepo) UpdateProfile(ctx context.Context, profileUpdate *models.U
 	_, err := repo.db.NamedExecContext(ctx, query, profileUpdate)
 	return err
 }
+
+func (repo *userRepo) UpdateAvatar(ctx context.Context, userAvatarUpdate *models.UserAvatarUpdate) error {
+	_, err := repo.db.NamedExecContext(ctx, "UPDATE `users` SET `avatar`=:avatar WHERE `id`=:id", userAvatarUpdate)
+	if err != nil {
+		return err
+	}
+	return nil
+}
