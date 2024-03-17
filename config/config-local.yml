@@ -9,7 +9,7 @@ MySQL:
   Host: localhost
   Port: 3306
   Username: root
-  Password: 
+  Password:
   DBName: nettruyen
   DriverName: mysql
 
@@ -20,3 +20,8 @@ Redis:
   DB: 0
   PoolSize: 300
   PoolTimeout: 240
+
+Dropbox:
+  AppKey: appkey
+  AppSecret: appsecret
+  RefreshToken: refreshtoken
