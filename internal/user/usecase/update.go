@@ -65,3 +65,25 @@ func (uc *userUseCase) UpdateAvatar(ctx context.Context, userAvatarUpdate *model
 
 	return nil
 }
+
+func (uc *userUseCase) ChangePassword(ctx context.Context, userChangePassword *models.UserChangePassword) error {
+	user, err := uc.userRepo.GetProfile(ctx, userChangePassword.ID)
+	if err != nil {
+		return err
+	}
+
+	if err := utils.ComparePassword(user.HashPassword, userChangePassword.CurrentPassword); err != nil {
+		return common.NewUnauthorizedApiError(err, "Current password invalid!")
+	}
+
+	hashedPassword, err := utils.HashPassword(userChangePassword.NewPassword)
+	if err != nil {
+		return err
+	}
+
+	if err := uc.userRepo.UpdatePassword(ctx, userChangePassword.ID, hashedPassword); err != nil {
+		return err
+	}
+
+	return nil
+}

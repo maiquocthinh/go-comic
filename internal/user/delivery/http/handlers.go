@@ -102,8 +102,26 @@ func (h *userHandlers) UpdateAvatar() gin.HandlerFunc {
 }
 
 func (h *userHandlers) ChangePassword() gin.HandlerFunc {
-	return func(context *gin.Context) {
+	return func(ctx *gin.Context) {
+		var userChangePassword models.UserChangePassword
 
+		if err := ctx.BindJSON(&userChangePassword); err != nil {
+			common.HandleBindingErr(ctx, err)
+			return
+		}
+
+		userClaims, err := utils.GetUserTokenClaimsFromContext(ctx)
+		if err != nil {
+			panic(common.NewUnauthorizedApiError(err, ""))
+		}
+
+		userChangePassword.ID = userClaims.UserID
+
+		if err := h.userUseCase.ChangePassword(ctx.Request.Context(), &userChangePassword); err != nil {
+			panic(err)
+		}
+
+		ctx.JSON(http.StatusOK, common.SimpleMessageSuccessResponse("Change password success."))
 	}
 }
 

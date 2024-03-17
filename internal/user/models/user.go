@@ -22,3 +22,9 @@ type UserAvatarUpdate struct {
 	Avatar     string                `json:"avatar" db:"avatar"`
 	FileHeader *multipart.FileHeader `json:"-"`
 }
+
+type UserChangePassword struct {
+	ID              int    `json:"-"`
+	CurrentPassword string `json:"current_password"`
+	NewPassword     string `json:"new_password"`
+}

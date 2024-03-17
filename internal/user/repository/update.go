@@ -31,3 +31,11 @@ func (repo *userRepo) UpdateAvatar(ctx context.Context, userAvatarUpdate *models
 	}
 	return nil
 }
+
+func (repo *userRepo) UpdatePassword(ctx context.Context, userID int, hashedPassword string) error {
+	_, err := repo.db.ExecContext(ctx, "UPDATE `users` SET  `hash_password`=? WHERE `id`=?", hashedPassword, userID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
