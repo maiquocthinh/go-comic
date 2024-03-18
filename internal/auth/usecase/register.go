@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/maiquocthinh/go-comic/internal/auth/models"
 	"github.com/maiquocthinh/go-comic/pkg/common"
+	"github.com/maiquocthinh/go-comic/pkg/utils"
 )
 
 func (uc *authUseCase) Register(ctx context.Context, userRegister *models.UserRegister) error {
@@ -22,6 +23,14 @@ func (uc *authUseCase) Register(ctx context.Context, userRegister *models.UserRe
 			"This Username already taken.",
 		)
 	}
+
+	// hash password
+	hashedPassword, err := utils.HashPassword(userRegister.Password)
+	if err != nil {
+		return err
+	}
+
+	userRegister.HashedPassword = hashedPassword
 
 	return uc.authRepo.CreateUser(ctx, userRegister)
 }

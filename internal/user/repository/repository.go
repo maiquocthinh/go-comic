@@ -18,6 +18,6 @@ func NewUserRepository(db *sqlx.DB) *userRepo {
 type UserRepository interface {
 	GetProfile(ctx context.Context, userID int) (*entities.User, error)
 	UpdateProfile(ctx context.Context, profileUpdate *models.UserProfileUpdate) error
-	UpdateAvatar(ctx context.Context, userAvatarUpdate *models.UserAvatarUpdate) error
+	UpdateAvatar(ctx context.Context, userID int, avatar string) error
 	UpdatePassword(ctx context.Context, userID int, hashedPassword string) error
 }

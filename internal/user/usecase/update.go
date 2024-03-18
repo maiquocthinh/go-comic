@@ -59,7 +59,7 @@ func (uc *userUseCase) UpdateAvatar(ctx context.Context, userAvatarUpdate *model
 	userAvatarUpdate.Avatar = utils.DropboxShareLinkToDirectLink(userAvatarUpdate.Avatar)
 
 	// update avatar
-	if err := uc.userRepo.UpdateAvatar(ctx, userAvatarUpdate); err != nil {
+	if err := uc.userRepo.UpdateAvatar(ctx, userAvatarUpdate.ID, userAvatarUpdate.Avatar); err != nil {
 		return err
 	}
 

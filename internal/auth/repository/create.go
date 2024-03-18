@@ -3,24 +3,13 @@ package repository
 import (
 	"context"
 	"github.com/maiquocthinh/go-comic/internal/auth/models"
-	"github.com/maiquocthinh/go-comic/pkg/utils"
 )
 
 func (repo *authRepo) CreateUser(ctx context.Context, userRegister *models.UserRegister) error {
-
-	// hash password
-	hashedPassword, err := utils.HashPassword(userRegister.Password)
-	if err != nil {
-		return err
-	}
-
-	// create new user
-	_, err = repo.db.ExecContext(
+	_, err := repo.db.NamedExecContext(
 		ctx,
-		"INSERT INTO `users` (`username`, `email`, `hash_password`) VALUES (?, ?, ?)",
-		userRegister.Username,
-		userRegister.Email,
-		hashedPassword,
+		"INSERT INTO `users` (`username`, `email`, `hash_password`) VALUES (:username, :email, :hash_password)",
+		userRegister,
 	)
 	if err != nil {
 		return err
