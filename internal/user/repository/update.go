@@ -24,8 +24,16 @@ func (repo *userRepo) UpdateProfile(ctx context.Context, profileUpdate *models.U
 	return err
 }
 
-func (repo *userRepo) UpdateAvatar(ctx context.Context, userAvatarUpdate *models.UserAvatarUpdate) error {
-	_, err := repo.db.NamedExecContext(ctx, "UPDATE `users` SET `avatar`=:avatar WHERE `id`=:id", userAvatarUpdate)
+func (repo *userRepo) UpdateAvatar(ctx context.Context, userID int, avatar string) error {
+	_, err := repo.db.ExecContext(ctx, "UPDATE `users` SET `avatar`=? WHERE `id`=?", avatar, userID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (repo *userRepo) UpdatePassword(ctx context.Context, userID int, hashedPassword string) error {
+	_, err := repo.db.ExecContext(ctx, "UPDATE `users` SET  `hash_password`=? WHERE `id`=?", hashedPassword, userID)
 	if err != nil {
 		return err
 	}

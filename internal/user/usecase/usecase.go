@@ -24,4 +24,5 @@ type UserUseCase interface {
 	GetProfile(ctx context.Context, userID int) (*entities.User, error)
 	UpdateProfile(ctx context.Context, profileUpdate *models.UserProfileUpdate) (*entities.User, error)
 	UpdateAvatar(ctx context.Context, userAvatarUpdate *models.UserAvatarUpdate) error
+	ChangePassword(ctx context.Context, userChangePassword *models.UserChangePassword) error
 }
