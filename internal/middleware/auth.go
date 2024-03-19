@@ -33,7 +33,7 @@ func (mm *middlewareManager) VerifyJWTMiddleware() gin.HandlerFunc {
 		}
 
 		if inBlackList, err := mm.authRedisRepo.IsTokenInBlackList(ctx.Request.Context(), userClaims.ID); err != nil || inBlackList {
-			panic(common.NewUnauthorizedApiError(errors.New("Invalid token"), ""))
+			panic(common.NewInternalApiError(err, ""))
 		}
 
 		ctx.Next()
