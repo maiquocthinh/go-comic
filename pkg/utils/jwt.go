@@ -8,6 +8,8 @@ import (
 	"github.com/maiquocthinh/go-comic/config"
 	"github.com/maiquocthinh/go-comic/internal/entities"
 	"github.com/maiquocthinh/go-comic/pkg/common"
+	"net/http"
+	"strings"
 	"time"
 )
 
@@ -65,7 +67,7 @@ func ParseJWTOfUser(tokenString string, cfg *config.ServerConfig) (*UserTokenCla
 	return &claims, nil
 }
 
-func GetUserTokenClaimsFromContext(ctx *gin.Context) (*UserTokenClaims, error) {
+func GetUserClaimsFromContext(ctx *gin.Context) (*UserTokenClaims, error) {
 	claims, exists := ctx.Get(common.KeyUserClaims)
 	if !exists {
 		return nil, errors.New("Invalid token")
@@ -77,4 +79,19 @@ func GetUserTokenClaimsFromContext(ctx *gin.Context) (*UserTokenClaims, error) {
 	}
 
 	return userClaims, nil
+}
+
+func GetUserTokenFromHeader(header *http.Header) (string, error) {
+	bearerHeader := header.Get("Authorization")
+	if bearerHeader == "" {
+		return "", errors.New("Cannot extrac token.")
+	}
+	headerParts := strings.Split(bearerHeader, " ")
+	if len(headerParts) != 2 {
+		return "", errors.New("Cannot extrac token.")
+	}
+
+	tokenString := headerParts[1]
+
+	return tokenString, nil
 }

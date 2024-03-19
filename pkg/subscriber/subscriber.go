@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/jmoiron/sqlx"
 	"github.com/maiquocthinh/go-comic/pkg/asyncjob"
+	"github.com/maiquocthinh/go-comic/pkg/common"
 	"github.com/maiquocthinh/go-comic/pkg/pubsub"
 	"log"
 )
@@ -22,7 +23,15 @@ func NewEngine(db *sqlx.DB, ps pubsub.PubSub) *consumerEngine {
 	return &consumerEngine{db: db, ps: ps}
 }
 
-func (engine *consumerEngine) Start() {}
+func (engine *consumerEngine) Start() {
+
+	engine.startSubscribeTopic(
+		common.TopicWriteHistoryView,
+		false,
+		WriteHistoryAfterViewChapter(engine.db),
+	)
+
+}
 
 func (engine *consumerEngine) startSubscribeTopic(topic string, isConcurrent bool, consumerJobs ...*consumerJob) {
 	subListener := engine.ps.Subscribe(context.Background(), topic)

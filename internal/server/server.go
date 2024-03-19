@@ -2,6 +2,9 @@ package server
 
 import (
 	"context"
+	"github.com/maiquocthinh/go-comic/pkg/pubsub"
+	"github.com/maiquocthinh/go-comic/pkg/pubsub/redis_pubsub"
+	"github.com/maiquocthinh/go-comic/pkg/subscriber"
 	"log"
 	"net/http"
 	"os"
@@ -26,6 +29,7 @@ type Server struct {
 	config      *config.Config
 	mysqlDB     *sqlx.DB
 	redisClient *redis.Client
+	pubsub      pubsub.PubSub
 	logger      *logrus.Logger
 }
 
@@ -35,6 +39,7 @@ func NewServer(cfg *config.Config, mysqlDB *sqlx.DB, redisClient *redis.Client) 
 		config:      cfg,
 		mysqlDB:     mysqlDB,
 		redisClient: redisClient,
+		pubsub:      redis_pubsub.NewRedisPubSub(redisClient),
 		logger:      logrus.New(),
 	}
 }
@@ -47,6 +52,8 @@ func (s *Server) Run() error {
 		WriteTimeout:   time.Second * s.config.Server.WriteTimeout,
 		MaxHeaderBytes: maxHeaderBytes,
 	}
+
+	subscriber.NewEngine(s.mysqlDB, s.pubsub).Start()
 
 	go func() {
 		s.logger.Infof("Server is listening on PORT: %s", s.config.Server.Port)

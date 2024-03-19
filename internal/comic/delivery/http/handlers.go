@@ -1,6 +1,7 @@
 package http
 
 import (
+	"github.com/maiquocthinh/go-comic/internal/middleware"
 	"net/http"
 	"strconv"
 
@@ -11,11 +12,12 @@ import (
 )
 
 type comicHandlers struct {
+	mm           middleware.MiddlewareManager
 	comicUseCase usecase.ComicUseCase
 }
 
-func NewComicHandlers(comicUseCase usecase.ComicUseCase) *comicHandlers {
-	return &comicHandlers{comicUseCase: comicUseCase}
+func NewComicHandlers(mm middleware.MiddlewareManager, comicUseCase usecase.ComicUseCase) *comicHandlers {
+	return &comicHandlers{mm: mm, comicUseCase: comicUseCase}
 }
 
 type ComicHandlers interface {
