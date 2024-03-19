@@ -77,7 +77,7 @@ func (repo *comicRepo) GetChapterOfComic(ctx context.Context, comicID, chapterID
 	)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return nil, common.NewInternalApiError(err, "Chapter not found.")
+			return nil, common.NewBadRequestApiError(err, "Chapter not found.")
 		}
 		return nil, err
 	}

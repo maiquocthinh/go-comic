@@ -38,11 +38,11 @@ func (s *Server) mapHandlers() error {
 	userUC := userUseCase.NewUserUseCase(userRepo, dropboxProvider)
 
 	// New middleware manager
-	middlewareManager := middleware.NewMiddlewareManager(s.config, authRedisRepo)
+	middlewareManager := middleware.NewMiddlewareManager(s.config, s.pubsub, authRedisRepo)
 
 	// Init handlers
 	authHandlers := authHttp.NewComicHandlers(middlewareManager, authUC)
-	comicHandlers := comicHttp.NewComicHandlers(comicUC)
+	comicHandlers := comicHttp.NewComicHandlers(middlewareManager, comicUC)
 	userHandlers := userHttp.NewUserHandlers(middlewareManager, userUC)
 
 	// Use middleware

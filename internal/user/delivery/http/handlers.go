@@ -34,7 +34,7 @@ type UserHandlers interface {
 
 func (h *userHandlers) GetProfile() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		userClaims, err := utils.GetUserTokenClaimsFromContext(ctx)
+		userClaims, err := utils.GetUserClaimsFromContext(ctx)
 		if err != nil {
 			panic(common.NewUnauthorizedApiError(err, ""))
 		}
@@ -57,7 +57,7 @@ func (h *userHandlers) UpdateProfile() gin.HandlerFunc {
 			return
 		}
 
-		userClaims, err := utils.GetUserTokenClaimsFromContext(ctx)
+		userClaims, err := utils.GetUserClaimsFromContext(ctx)
 		if err != nil {
 			panic(common.NewUnauthorizedApiError(err, ""))
 		}
@@ -85,7 +85,7 @@ func (h *userHandlers) UpdateAvatar() gin.HandlerFunc {
 			panic(common.NewBadRequestApiError(errors.New("Only image file are allowed"), ""))
 		}
 
-		userClaims, err := utils.GetUserTokenClaimsFromContext(ctx)
+		userClaims, err := utils.GetUserClaimsFromContext(ctx)
 		userAvatarUpdate := models.UserAvatarUpdate{
 			ID:         userClaims.UserID,
 			Username:   userClaims.Username,
@@ -110,7 +110,7 @@ func (h *userHandlers) ChangePassword() gin.HandlerFunc {
 			return
 		}
 
-		userClaims, err := utils.GetUserTokenClaimsFromContext(ctx)
+		userClaims, err := utils.GetUserClaimsFromContext(ctx)
 		if err != nil {
 			panic(common.NewUnauthorizedApiError(err, ""))
 		}

@@ -22,4 +22,5 @@ type Repository interface {
 	List(ctx context.Context, filter *models.ComicFilter, paging *common.Paging) ([]*entities.Comic, error)
 	GetChapterOfComic(ctx context.Context, comicID, chapterID int) (*models.ChapterDetail, error)
 	SearchComic(ctx context.Context, keyword string, paging *common.Paging) ([]*entities.Comic, error)
+	WriteHistoryView(ctx context.Context, historyView *models.HistoryView) error
 }

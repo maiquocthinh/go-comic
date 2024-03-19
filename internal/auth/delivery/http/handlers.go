@@ -67,7 +67,7 @@ func (h *authHandlers) Login() gin.HandlerFunc {
 
 func (h *authHandlers) Logout() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		userClaims, err := utils.GetUserTokenClaimsFromContext(ctx)
+		userClaims, err := utils.GetUserClaimsFromContext(ctx)
 		if err != nil {
 			panic(common.NewUnauthorizedApiError(err, ""))
 		}
