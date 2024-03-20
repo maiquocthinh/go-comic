@@ -128,7 +128,6 @@ func (h *userHandlers) ChangePassword() gin.HandlerFunc {
 func (h *userHandlers) GetHistoryView() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var paging common.Paging
-
 		if err := ctx.BindQuery(&paging); err != nil {
 			common.HandleBindingErr(ctx, err)
 			return
@@ -149,7 +148,20 @@ func (h *userHandlers) GetHistoryView() gin.HandlerFunc {
 }
 
 func (h *userHandlers) GetComments() gin.HandlerFunc {
-	return func(context *gin.Context) {
+	return func(ctx *gin.Context) {
+		var paging common.Paging
+		if err := ctx.BindQuery(&paging); err != nil {
+			common.HandleBindingErr(ctx, err)
+			return
+		}
 
+		userClaims, err := utils.GetUserClaimsFromContext(ctx)
+		if err != nil {
+			panic(common.NewUnauthorizedApiError(err, ""))
+		}
+
+		comments, err := h.userUseCase.GetComments(ctx.Request.Context(), userClaims.UserID, &paging)
+
+		ctx.JSON(http.StatusOK, common.NewSuccessResponse(comments, paging))
 	}
 }

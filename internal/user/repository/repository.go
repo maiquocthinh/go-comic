@@ -22,4 +22,5 @@ type UserRepository interface {
 	UpdateAvatar(ctx context.Context, userID int, avatar string) error
 	UpdatePassword(ctx context.Context, userID int, hashedPassword string) error
 	GetHistoryView(ctx context.Context, userID int, paging *common.Paging) ([]*models.HistoryView, error)
+	GetComments(ctx context.Context, userID int, paging *common.Paging) ([]*models.CommentDetail, error)
 }

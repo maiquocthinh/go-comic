@@ -10,3 +10,8 @@ func (uc *userUseCase) GetHistoryView(ctx context.Context, userID int, paging *c
 	paging.Fulfill()
 	return uc.userRepo.GetHistoryView(ctx, userID, paging)
 }
+
+func (uc *userUseCase) GetComments(ctx context.Context, userID int, paging *common.Paging) ([]*models.CommentDetail, error) {
+	paging.Fulfill()
+	return uc.userRepo.GetComments(ctx, userID, paging)
+}

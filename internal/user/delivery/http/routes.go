@@ -8,5 +8,5 @@ func (h *userHandlers) MapComicRotes(route *gin.RouterGroup) {
 	route.PUT("/profile/avatar", h.mm.RequiredAuthJWTMiddleware(), h.UpdateAvatar())
 	route.PUT("/change-password", h.mm.RequiredAuthJWTMiddleware(), h.ChangePassword())
 	route.GET("/histories", h.mm.RequiredAuthJWTMiddleware(), h.GetHistoryView())
-	route.GET("/comments", h.GetComments())
+	route.GET("/comments", h.mm.RequiredAuthJWTMiddleware(), h.GetComments())
 }

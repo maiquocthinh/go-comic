@@ -52,3 +52,29 @@ func (repo userRepo) GetHistoryView(ctx context.Context, userID int, paging *com
 
 	return histories, nil
 }
+
+func (repo userRepo) GetComments(ctx context.Context, userID int, paging *common.Paging) ([]*models.CommentDetail, error) {
+	err := repo.db.QueryRowxContext(ctx, "SELECT COUNT(`id`) FROM `comments` WHERE `user_id`=?", userID).Scan(&paging.Total)
+	if err != nil {
+		return nil, err
+	}
+	paging.Sync()
+
+	var comments []*models.CommentDetail
+	err = repo.db.SelectContext(
+		ctx,
+		&comments,
+		"SELECT `comments`.*, `comics`.`name` AS `comic_name`, `comics`.`image` AS `comic_image`, `chapters`.`name` AS `chapter_name` "+
+			"FROM `comments` "+
+			"JOIN `chapters` ON `chapters`.`id` = `comments`.`chapter_id` "+
+			"JOIN `comics` ON `comics`.`id` = `chapters`.`comic_id` "+
+			"WHERE `comments`.`user_id`=? "+
+			"ORDER BY `comments`.`created_at` DESC;",
+		userID,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return comments, nil
+}
