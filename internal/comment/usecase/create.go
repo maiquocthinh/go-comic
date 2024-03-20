@@ -28,3 +28,24 @@ func (uc *commentUseCase) CreateComment(ctx context.Context, comicID int, commen
 
 	return comment, nil
 }
+
+func (uc *commentUseCase) CreateReplyComment(ctx context.Context, comicID int, commentCreate *models.CommentReplyCreate) (*entities.Comment, error) {
+	ok, err := uc.commentRepo.IsChapterBelongComic(ctx, comicID, commentCreate.ChapterID)
+	if err != nil {
+		return nil, err
+	}
+	if !ok {
+		return nil, common.NewBadRequestApiError(errors.New("Chapter not found."), "Chapter not found.")
+	}
+
+	if err := uc.commentRepo.CreateReplyComment(ctx, commentCreate); err != nil {
+		return nil, err
+	}
+
+	comment, err := uc.commentRepo.GetCommentByID(ctx, commentCreate.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	return comment, nil
+}

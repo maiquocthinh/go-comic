@@ -9,6 +9,11 @@ type CommentCreate struct {
 	Content   string `json:"content" db:"content" binding:"required,gte=8"`
 }
 
+type CommentReplyCreate struct {
+	CommentCreate
+	CommentParentID int `json:"comment_parent_id" db:"comment_parent_id"`
+}
+
 type CommentDetail struct {
 	entities.Comment
 	Username   string `json:"username" db:"username"`
