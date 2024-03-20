@@ -27,4 +27,5 @@ type UserUseCase interface {
 	UpdateAvatar(ctx context.Context, userAvatarUpdate *models.UserAvatarUpdate) error
 	ChangePassword(ctx context.Context, userChangePassword *models.UserChangePassword) error
 	GetHistoryView(ctx context.Context, userID int, paging *common.Paging) ([]*models.HistoryView, error)
+	GetComments(ctx context.Context, userID int, paging *common.Paging) ([]*models.CommentDetail, error)
 }
