@@ -125,6 +125,29 @@ func (h *userHandlers) ChangePassword() gin.HandlerFunc {
 	}
 }
 
+func (h *userHandlers) GetHistoryView() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		var paging common.Paging
+
+		if err := ctx.BindQuery(&paging); err != nil {
+			common.HandleBindingErr(ctx, err)
+			return
+		}
+
+		userClaims, err := utils.GetUserClaimsFromContext(ctx)
+		if err != nil {
+			panic(common.NewUnauthorizedApiError(err, ""))
+		}
+
+		histories, err := h.userUseCase.GetHistoryView(ctx.Request.Context(), userClaims.UserID, &paging)
+		if err != nil {
+			panic(common.NewInternalApiError(err, ""))
+		}
+
+		ctx.JSON(http.StatusOK, common.NewSuccessResponse(histories, paging))
+	}
+}
+
 func (h *userHandlers) GetComments() gin.HandlerFunc {
 	return func(context *gin.Context) {
 

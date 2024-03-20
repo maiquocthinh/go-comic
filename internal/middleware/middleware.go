@@ -22,7 +22,7 @@ func NewMiddlewareManager(cfg *config.Config, pubsub pubsub.PubSub, authRedisRep
 }
 
 type MiddlewareManager interface {
-	AuthJWTMiddleware() gin.HandlerFunc
-	VerifyJWTMiddleware() gin.HandlerFunc
+	RequiredAuthJWTMiddleware() gin.HandlerFunc
+	OptionalAuthJWTMiddleware() gin.HandlerFunc
 	WriteHistory() gin.HandlerFunc
 }

@@ -5,6 +5,7 @@ import (
 	"github.com/maiquocthinh/go-comic/internal/entities"
 	"github.com/maiquocthinh/go-comic/internal/user/models"
 	"github.com/maiquocthinh/go-comic/internal/user/repository"
+	"github.com/maiquocthinh/go-comic/pkg/common"
 	"github.com/maiquocthinh/go-comic/pkg/uploadprovider"
 )
 
@@ -25,4 +26,5 @@ type UserUseCase interface {
 	UpdateProfile(ctx context.Context, profileUpdate *models.UserProfileUpdate) (*entities.User, error)
 	UpdateAvatar(ctx context.Context, userAvatarUpdate *models.UserAvatarUpdate) error
 	ChangePassword(ctx context.Context, userChangePassword *models.UserChangePassword) error
+	GetHistoryView(ctx context.Context, userID int, paging *common.Paging) ([]*models.HistoryView, error)
 }
