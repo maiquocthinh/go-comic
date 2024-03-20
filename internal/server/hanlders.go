@@ -35,7 +35,7 @@ func (s *Server) mapHandlers() error {
 	authRedisRepo := authRepository.NewAuthRedisRepository(s.redisClient)
 	comicRepo := comicRepository.NewComicRepository(s.mysqlDB)
 	userRepo := userRepository.NewUserRepository(s.mysqlDB)
-	commentRepo := commentRepository.CommentRepository(s.mysqlDB)
+	commentRepo := commentRepository.NewCommentRepository(s.mysqlDB)
 
 	// Init useCases
 	authUC := authUseCase.NewAuthUseCase(s.config, authRepo, authRedisRepo)

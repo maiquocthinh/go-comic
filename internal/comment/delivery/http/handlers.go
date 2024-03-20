@@ -2,8 +2,13 @@ package http
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/maiquocthinh/go-comic/internal/comment/models"
 	"github.com/maiquocthinh/go-comic/internal/comment/usecase"
 	"github.com/maiquocthinh/go-comic/internal/middleware"
+	"github.com/maiquocthinh/go-comic/pkg/common"
+	"github.com/maiquocthinh/go-comic/pkg/utils"
+	"net/http"
+	"strconv"
 )
 
 type commentHandlers struct {
@@ -39,7 +44,35 @@ func (h *commentHandlers) GetRepliesOfComment() gin.HandlerFunc {
 
 func (h *commentHandlers) PostComment() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		comicID, err := strconv.Atoi(ctx.Param("comicID"))
+		if err != nil {
+			panic(common.NewBadRequestApiError(err, "`comicID` must be int"))
+		}
+		chapterID, err := strconv.Atoi(ctx.Param("chapterID"))
+		if err != nil {
+			panic(common.NewBadRequestApiError(err, "`chapterID` must be int"))
+		}
 
+		var commentCreate models.CommentCreate
+		if err := ctx.BindJSON(&commentCreate); err != nil {
+			common.HandleBindingErr(ctx, err)
+			return
+		}
+
+		userClaims, err := utils.GetUserClaimsFromContext(ctx)
+		if err != nil {
+			panic(err)
+		}
+
+		commentCreate.UserID = userClaims.UserID
+		commentCreate.ChapterID = chapterID
+
+		comment, err := h.commentUseCase.CreateComment(ctx.Request.Context(), comicID, &commentCreate)
+		if err != nil {
+			panic(err)
+		}
+
+		ctx.JSON(http.StatusCreated, common.SimpleDataSuccessResponse(comment))
 	}
 }
 
