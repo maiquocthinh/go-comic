@@ -5,6 +5,7 @@ import (
 	"github.com/maiquocthinh/go-comic/internal/comment/models"
 	"github.com/maiquocthinh/go-comic/internal/comment/repository"
 	"github.com/maiquocthinh/go-comic/internal/entities"
+	"github.com/maiquocthinh/go-comic/pkg/common"
 )
 
 type commentUseCase struct {
@@ -16,6 +17,7 @@ func NewCommentUseCase(commentRepo repository.CommentRepository) *commentUseCase
 }
 
 type CommentUseCase interface {
+	GetComments(ctx context.Context, comicID, chapterID, userID int, paging *common.Paging) ([]*models.CommentDetail, error)
 	CreateComment(ctx context.Context, comicID int, commentCreate *models.CommentCreate) (*entities.Comment, error)
 	DeleteComment(ctx context.Context, comicID, chapterID, commentID, userID int) error
 }

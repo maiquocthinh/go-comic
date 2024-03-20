@@ -32,7 +32,30 @@ type CommentHandlers interface {
 
 func (h *commentHandlers) GetCommentsOfChapter() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		comicID, err := strconv.Atoi(ctx.Param("comicID"))
+		if err != nil {
+			panic(common.NewBadRequestApiError(err, "`comicID` must be int"))
+		}
+		chapterID, err := strconv.Atoi(ctx.Param("chapterID"))
+		if err != nil {
+			panic(common.NewBadRequestApiError(err, "`chapterID` must be int"))
+		}
 
+		var paging common.Paging
+		if err := ctx.BindQuery(&paging); err != nil {
+			common.HandleBindingErr(ctx, err)
+			return
+
+		}
+
+		var userID int
+
+		comments, err := h.commentUseCase.GetComments(ctx.Request.Context(), comicID, chapterID, userID, &paging)
+		if err != nil {
+			panic(err)
+		}
+
+		ctx.JSON(http.StatusOK, common.NewSuccessResponse(comments, &paging))
 	}
 }
 

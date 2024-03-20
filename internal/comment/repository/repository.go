@@ -5,6 +5,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/maiquocthinh/go-comic/internal/comment/models"
 	"github.com/maiquocthinh/go-comic/internal/entities"
+	"github.com/maiquocthinh/go-comic/pkg/common"
 )
 
 type commentRepo struct {
@@ -20,6 +21,7 @@ func NewCommentRepository(db *sqlx.DB) *commentRepo {
 type CommentRepository interface {
 	IsChapterBelongComic(ctx context.Context, comicID, chapterID int) (bool, error)
 	IsCommentBelongUser(ctx context.Context, commentID, userID int) (bool, error)
+	GetCommentsByChapterID(ctx context.Context, chapterID int, paging *common.Paging) ([]*models.CommentDetail, error)
 	CreateComment(ctx context.Context, commentCreate *models.CommentCreate) error
 	GetCommentByID(ctx context.Context, commentID int) (*entities.Comment, error)
 	DeleteCommentByID(ctx context.Context, commentID int) error
