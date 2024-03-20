@@ -18,6 +18,7 @@ func NewCommentUseCase(commentRepo repository.CommentRepository) *commentUseCase
 
 type CommentUseCase interface {
 	GetComments(ctx context.Context, comicID, chapterID, userID int, paging *common.Paging) ([]*models.CommentDetail, error)
+	GetCommentReplies(ctx context.Context, commentID, comicID, chapterID, userID int, paging *common.Paging) ([]*models.CommentDetail, error)
 	CreateComment(ctx context.Context, comicID int, commentCreate *models.CommentCreate) (*entities.Comment, error)
 	DeleteComment(ctx context.Context, comicID, chapterID, commentID, userID int) error
 }

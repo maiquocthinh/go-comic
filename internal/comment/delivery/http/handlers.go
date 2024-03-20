@@ -64,7 +64,37 @@ func (h *commentHandlers) GetCommentsOfChapter() gin.HandlerFunc {
 
 func (h *commentHandlers) GetRepliesOfComment() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		comicID, err := strconv.Atoi(ctx.Param("comicID"))
+		if err != nil {
+			panic(common.NewBadRequestApiError(err, "`comicID` must be int"))
+		}
+		chapterID, err := strconv.Atoi(ctx.Param("chapterID"))
+		if err != nil {
+			panic(common.NewBadRequestApiError(err, "`chapterID` must be int"))
+		}
+		commentID, err := strconv.Atoi(ctx.Param("commentID"))
+		if err != nil {
+			panic(common.NewBadRequestApiError(err, "`commentID` must be int"))
+		}
 
+		var userID int
+		userClaims, err := utils.GetUserClaimsFromContext(ctx)
+		if err == nil {
+			userID = userClaims.UserID
+		}
+
+		var paging common.Paging
+		if err := ctx.BindQuery(&paging); err != nil {
+			common.HandleBindingErr(ctx, err)
+			return
+		}
+
+		comments, err := h.commentUseCase.GetCommentReplies(ctx.Request.Context(), commentID, comicID, chapterID, userID, &paging)
+		if err != nil {
+			panic(err)
+		}
+
+		ctx.JSON(http.StatusOK, common.NewSuccessResponse(comments, &paging))
 	}
 }
 
@@ -114,7 +144,7 @@ func (h *commentHandlers) DeleteComment() gin.HandlerFunc {
 		}
 		commentID, err := strconv.Atoi(ctx.Param("commentID"))
 		if err != nil {
-			panic(common.NewBadRequestApiError(err, "`chapterID` must be int"))
+			panic(common.NewBadRequestApiError(err, "`commentID` must be int"))
 		}
 
 		userClaims, err := utils.GetUserClaimsFromContext(ctx)
