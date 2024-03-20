@@ -45,10 +45,13 @@ func (h *commentHandlers) GetCommentsOfChapter() gin.HandlerFunc {
 		if err := ctx.BindQuery(&paging); err != nil {
 			common.HandleBindingErr(ctx, err)
 			return
-
 		}
 
 		var userID int
+		userClaims, err := utils.GetUserClaimsFromContext(ctx)
+		if err == nil {
+			userID = userClaims.UserID
+		}
 
 		comments, err := h.commentUseCase.GetComments(ctx.Request.Context(), comicID, chapterID, userID, &paging)
 		if err != nil {

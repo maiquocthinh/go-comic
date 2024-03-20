@@ -7,7 +7,7 @@ import (
 	"github.com/maiquocthinh/go-comic/pkg/utils"
 )
 
-func (mm *middlewareManager) AuthJWTMiddleware() gin.HandlerFunc {
+func (mm *middlewareManager) RequiredAuthJWTMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		tokenString, err := utils.GetUserTokenFromHeader(&ctx.Request.Header)
 		if err != nil {
@@ -19,22 +19,41 @@ func (mm *middlewareManager) AuthJWTMiddleware() gin.HandlerFunc {
 			panic(common.NewUnauthorizedApiError(err, ""))
 		}
 
+		inBlackList, err := mm.authRedisRepo.IsTokenInBlackList(ctx.Request.Context(), userClaims.ID)
+		if err != nil {
+			panic(common.NewInternalApiError(err, ""))
+		}
+		if inBlackList {
+			panic(common.NewUnauthorizedApiError(err, ""))
+
+		}
+
 		ctx.Set(common.KeyUserClaims, userClaims)
 
 		ctx.Next()
 	}
 }
 
-func (mm *middlewareManager) VerifyJWTMiddleware() gin.HandlerFunc {
+func (mm *middlewareManager) OptionalAuthJWTMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		userClaims, err := utils.GetUserClaimsFromContext(ctx)
+		tokenString, err := utils.GetUserTokenFromHeader(&ctx.Request.Header)
 		if err != nil {
-			panic(common.NewUnauthorizedApiError(err, ""))
+			ctx.Next()
+			return
+		}
+
+		userClaims, err := utils.ParseJWTOfUser(tokenString, &mm.cfg.Server)
+		if err != nil {
+			ctx.Next()
+			return
 		}
 
 		if inBlackList, err := mm.authRedisRepo.IsTokenInBlackList(ctx.Request.Context(), userClaims.ID); err != nil || inBlackList {
-			panic(common.NewInternalApiError(err, ""))
+			ctx.Next()
+			return
 		}
+
+		ctx.Set(common.KeyUserClaims, userClaims)
 
 		ctx.Next()
 	}
