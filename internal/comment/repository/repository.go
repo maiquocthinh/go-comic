@@ -19,6 +19,8 @@ func NewCommentRepository(db *sqlx.DB) *commentRepo {
 
 type CommentRepository interface {
 	IsChapterBelongComic(ctx context.Context, comicID, chapterID int) bool
+	IsCommentBelongUser(ctx context.Context, commentID, userID int) bool
 	CreateComment(ctx context.Context, commentCreate *models.CommentCreate) error
 	GetCommentByID(ctx context.Context, commentID int) (*entities.Comment, error)
+	DeleteCommentByID(ctx context.Context, commentID int) error
 }

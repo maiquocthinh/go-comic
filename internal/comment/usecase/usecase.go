@@ -17,4 +17,5 @@ func NewCommentUseCase(commentRepo repository.CommentRepository) *commentUseCase
 
 type CommentUseCase interface {
 	CreateComment(ctx context.Context, comicID int, commentCreate *models.CommentCreate) (*entities.Comment, error)
+	DeleteComment(ctx context.Context, comicID, chapterID, commentID, userID int) error
 }

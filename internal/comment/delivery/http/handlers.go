@@ -78,6 +78,29 @@ func (h *commentHandlers) PostComment() gin.HandlerFunc {
 
 func (h *commentHandlers) DeleteComment() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		comicID, err := strconv.Atoi(ctx.Param("comicID"))
+		if err != nil {
+			panic(common.NewBadRequestApiError(err, "`comicID` must be int"))
+		}
+		chapterID, err := strconv.Atoi(ctx.Param("chapterID"))
+		if err != nil {
+			panic(common.NewBadRequestApiError(err, "`chapterID` must be int"))
+		}
+		commentID, err := strconv.Atoi(ctx.Param("commentID"))
+		if err != nil {
+			panic(common.NewBadRequestApiError(err, "`chapterID` must be int"))
+		}
 
+		userClaims, err := utils.GetUserClaimsFromContext(ctx)
+		if err != nil {
+			panic(err)
+		}
+
+		err = h.commentUseCase.DeleteComment(ctx.Request.Context(), comicID, chapterID, commentID, userClaims.UserID)
+		if err != nil {
+			panic(err)
+		}
+
+		ctx.JSON(http.StatusOK, common.SimpleMessageSuccessResponse("Delete comment success."))
 	}
 }

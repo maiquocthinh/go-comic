@@ -13,6 +13,14 @@ func (repo *commentRepo) IsChapterBelongComic(ctx context.Context, comicID, chap
 	return true
 }
 
+func (repo *commentRepo) IsCommentBelongUser(ctx context.Context, commentID, userID int) bool {
+	row := repo.db.QueryRowxContext(ctx, "SELECT 1 FROM `comments` WHERE `id`=? AND `user_id`=?", commentID, userID)
+	if err := row.Err(); err != nil {
+		return false
+	}
+	return true
+}
+
 func (repo *commentRepo) GetCommentByID(ctx context.Context, commentID int) (*entities.Comment, error) {
 	var comment entities.Comment
 
