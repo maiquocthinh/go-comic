@@ -132,6 +132,45 @@ func (h *commentHandlers) PostComment() gin.HandlerFunc {
 	}
 }
 
+func (h *commentHandlers) PostReplyComment() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		comicID, err := strconv.Atoi(ctx.Param("comicID"))
+		if err != nil {
+			panic(common.NewBadRequestApiError(err, "`comicID` must be int"))
+		}
+		chapterID, err := strconv.Atoi(ctx.Param("chapterID"))
+		if err != nil {
+			panic(common.NewBadRequestApiError(err, "`chapterID` must be int"))
+		}
+		commentID, err := strconv.Atoi(ctx.Param("commentID"))
+		if err != nil {
+			panic(common.NewBadRequestApiError(err, "`commentID` must be int"))
+		}
+
+		var commentCreate models.CommentReplyCreate
+		if err := ctx.BindJSON(&commentCreate); err != nil {
+			common.HandleBindingErr(ctx, err)
+			return
+		}
+
+		userClaims, err := utils.GetUserClaimsFromContext(ctx)
+		if err != nil {
+			panic(err)
+		}
+
+		commentCreate.UserID = userClaims.UserID
+		commentCreate.ChapterID = chapterID
+		commentCreate.CommentParentID = commentID
+
+		comment, err := h.commentUseCase.CreateReplyComment(ctx.Request.Context(), comicID, &commentCreate)
+		if err != nil {
+			panic(err)
+		}
+
+		ctx.JSON(http.StatusCreated, common.SimpleDataSuccessResponse(comment))
+	}
+}
+
 func (h *commentHandlers) DeleteComment() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		comicID, err := strconv.Atoi(ctx.Param("comicID"))
