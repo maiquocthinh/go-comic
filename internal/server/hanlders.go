@@ -24,6 +24,10 @@ import (
 	commentHttp "github.com/maiquocthinh/go-comic/internal/comment/delivery/http"
 	commentRepository "github.com/maiquocthinh/go-comic/internal/comment/repository"
 	commentUseCase "github.com/maiquocthinh/go-comic/internal/comment/usecase"
+
+	genreHttp "github.com/maiquocthinh/go-comic/internal/genre/delivery/http"
+	genreRepository "github.com/maiquocthinh/go-comic/internal/genre/repository"
+	genreUseCase "github.com/maiquocthinh/go-comic/internal/genre/usecase"
 )
 
 func (s *Server) mapHandlers() error {
@@ -36,12 +40,14 @@ func (s *Server) mapHandlers() error {
 	comicRepo := comicRepository.NewComicRepository(s.mysqlDB)
 	userRepo := userRepository.NewUserRepository(s.mysqlDB)
 	commentRepo := commentRepository.NewCommentRepository(s.mysqlDB)
+	genreRepo := genreRepository.NewGenreRepository(s.mysqlDB)
 
 	// Init useCases
 	authUC := authUseCase.NewAuthUseCase(s.config, authRepo, authRedisRepo)
 	comicUC := comicUseCase.NewComicUseCase(comicRepo)
 	userUC := userUseCase.NewUserUseCase(userRepo, dropboxProvider)
 	commentUC := commentUseCase.NewCommentUseCase(commentRepo)
+	genreUC := genreUseCase.NewGenreUseCase(genreRepo)
 
 	// New middleware manager
 	middlewareManager := middleware.NewMiddlewareManager(s.config, s.pubsub, authRedisRepo)
@@ -51,6 +57,7 @@ func (s *Server) mapHandlers() error {
 	comicHandlers := comicHttp.NewComicHandlers(middlewareManager, comicUC)
 	userHandlers := userHttp.NewUserHandlers(middlewareManager, userUC)
 	commentHandlers := commentHttp.NewCommentHandlers(middlewareManager, commentUC)
+	genreHandlers := genreHttp.NewGenreHandlers(genreUC)
 
 	// Use middleware
 	s.gin.Use(middleware.ErrorLogger(), middleware.Recovery()) // don't change order
@@ -67,6 +74,9 @@ func (s *Server) mapHandlers() error {
 
 	userRoutes := v1.Group("/user")
 	userHandlers.MapComicRotes(userRoutes)
+
+	genreRoutes := v1.Group("/genres")
+	genreHandlers.MapComicRotes(genreRoutes)
 
 	s.gin.GET("/ping", func(ctx *gin.Context) {
 		status := make(map[string]string)

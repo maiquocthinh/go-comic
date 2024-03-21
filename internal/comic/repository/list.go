@@ -7,13 +7,13 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	"github.com/maiquocthinh/go-comic/internal/comic/models"
-	"github.com/maiquocthinh/go-comic/internal/entities"
 	"github.com/maiquocthinh/go-comic/pkg/common"
 )
 
-func (repo *comicRepo) List(ctx context.Context, filter *models.ComicFilter, paging *common.Paging) ([]*entities.Comic, error) {
-	listComic := make([]*entities.Comic, 0)
-	query := "SELECT * FROM `comics` WHERE 1=1 "
+func (repo *comicRepo) List(ctx context.Context, filter *models.ComicFilter, paging *common.Paging) ([]*models.Comic, error) {
+	listComic := make([]*models.Comic, 0)
+	query := "SELECT *, ( SELECT `name` FROM `chapters` WHERE `comic_id` = `comics`.`id` ORDER BY `id` DESC LIMIT 1 ) AS lasted_chapter " +
+		"FROM `comics` WHERE 1=1 "
 	queryInit := query
 	queryCount := "SELECT COUNT(*) FROM `comics` WHERE 1=1 "
 
@@ -36,7 +36,7 @@ func (repo *comicRepo) List(ctx context.Context, filter *models.ComicFilter, pag
 	}
 
 	if filter.MinChapter > 0 {
-		query += "AND id IN (SELECT DISTINCT `comic_id` FROM `chapters` GROUP BY `comic_id` HAVING COUNT(*) >= :min_chapter)"
+		query += "AND id IN (SELECT DISTINCT `comic_id` FROM `chapters` GROUP BY `comic_id` HAVING COUNT(*) >= :min_chapter) "
 	}
 
 	var sortType string
@@ -91,7 +91,7 @@ func (repo *comicRepo) List(ctx context.Context, filter *models.ComicFilter, pag
 	defer rows.Close()
 
 	for rows.Next() {
-		var comic entities.Comic
+		var comic models.Comic
 		if err := rows.StructScan(&comic); err != nil {
 			return nil, err
 		}
@@ -101,8 +101,8 @@ func (repo *comicRepo) List(ctx context.Context, filter *models.ComicFilter, pag
 	return listComic, nil
 }
 
-func (repo *comicRepo) SearchComic(ctx context.Context, keyword string, paging *common.Paging) ([]*entities.Comic, error) {
-	listComic := make([]*entities.Comic, 0)
+func (repo *comicRepo) SearchComic(ctx context.Context, keyword string, paging *common.Paging) ([]*models.Comic, error) {
+	listComic := make([]*models.Comic, 0)
 
 	if err := repo.db.QueryRowxContext(
 		ctx,
@@ -115,7 +115,9 @@ func (repo *comicRepo) SearchComic(ctx context.Context, keyword string, paging *
 
 	rows, err := repo.db.Unsafe().QueryxContext(
 		ctx,
-		"SELECT	*,  MATCH ( `name`, `other_name` ) AGAINST ( ? ) as relative "+
+		"SELECT	*, "+
+			" ( SELECT `name` FROM `chapters` WHERE `comic_id` = `comics`.`id` ORDER BY `id` DESC LIMIT 1 ) AS lasted_chapter, "+
+			" MATCH ( `name`, `other_name` ) AGAINST ( ? ) as relative "+
 			"FROM `comics` "+
 			"WHERE MATCH ( `name`, `other_name` ) AGAINST ( ? ) "+
 			"ORDER BY relative DESC "+
@@ -129,7 +131,7 @@ func (repo *comicRepo) SearchComic(ctx context.Context, keyword string, paging *
 	defer rows.Close()
 
 	for rows.Next() {
-		var comic entities.Comic
+		var comic models.Comic
 		if err := rows.StructScan(&comic); err != nil {
 			return nil, err
 		}

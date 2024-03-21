@@ -5,7 +5,6 @@ import (
 
 	"github.com/maiquocthinh/go-comic/internal/comic/models"
 	"github.com/maiquocthinh/go-comic/internal/comic/repository"
-	"github.com/maiquocthinh/go-comic/internal/entities"
 	"github.com/maiquocthinh/go-comic/pkg/common"
 )
 
@@ -18,8 +17,8 @@ func NewComicUseCase(comicRepo repository.Repository) *comicUseCase {
 }
 
 type ComicUseCase interface {
-	List(ctx context.Context, filter *models.ComicFilter, paging *common.Paging) ([]*entities.Comic, error)
+	List(ctx context.Context, filter *models.ComicFilter, paging *common.Paging) ([]*models.Comic, error)
 	GetComic(ctx context.Context, ID int) (*models.ComicDetail, error)
 	GetChapterOfComic(ctx context.Context, comicID, chapterID int) (*models.ChapterDetail, error)
-	SearchComic(ctx context.Context, keyword string, paging *common.Paging) ([]*entities.Comic, error)
+	SearchComic(ctx context.Context, keyword string, paging *common.Paging) ([]*models.Comic, error)
 }

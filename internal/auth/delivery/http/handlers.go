@@ -22,7 +22,7 @@ func NewComicHandlers(mm middleware.MiddlewareManager, authUseCase usecase.AuthU
 	}
 }
 
-type ComicHandlers interface {
+type AuthHandlers interface {
 	Register() gin.HandlerFunc
 	Login() gin.HandlerFunc
 	Logout() gin.HandlerFunc
