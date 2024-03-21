@@ -6,11 +6,11 @@ Server:
   JwtUserExpiration: 604800 # 7 days
 
 MySQL:
-  Host: gateway01.ap-southeast-1.prod.aws.tidbcloud.com
-  Port: 4000
-  Username: 48mM87i9c6HEevz.root
-  Password: 1Q2vDXNntnesph64
-  DBName: nettruyen
+  Host: sql.freedb.tech
+  Port: 3306
+  Username: freedb_quocthinh
+  Password: g$%m%7eCZmBxs!J
+  DBName: freedb_nettruyen
   DriverName: mysql
 
 Redis:

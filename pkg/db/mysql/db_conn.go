@@ -1,11 +1,10 @@
 package mysql
 
 import (
-	"crypto/tls"
 	"fmt"
 	"time"
 
-	"github.com/go-sql-driver/mysql"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	"github.com/maiquocthinh/go-comic/config"
 )
@@ -18,12 +17,7 @@ const (
 )
 
 func NewMysqlDB(cfg *config.MySQLConfig) (*sqlx.DB, error) {
-	mysql.RegisterTLSConfig("tidb", &tls.Config{
-		MinVersion: tls.VersionTLS12,
-		ServerName: "gateway01.ap-southeast-1.prod.aws.tidbcloud.com",
-	})
-
-	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?tls=tidb&parseTime=true",
+	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?parseTime=true",
 		cfg.Username,
 		cfg.Password,
 		cfg.Host,
