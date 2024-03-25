@@ -36,7 +36,8 @@ func (repo *comicRepo) GetComic(ctx context.Context, ID int) (*models.ComicDetai
 	chaptersStmt, err := repo.db.Preparex(
 		"SELECT `chapters`.`id`, `chapters`.`name`, `chapters`.`updated_at` " +
 			"FROM `chapters` " +
-			"WHERE `chapters`.`comic_id` = ?",
+			"WHERE `chapters`.`comic_id` = ? " +
+			"ORDER BY `chapters`.`id` DESC",
 	)
 	if err != nil {
 		return nil, err
