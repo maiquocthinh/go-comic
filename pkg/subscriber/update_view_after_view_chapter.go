@@ -22,7 +22,7 @@ func IncreaseViewAfterViewChapter(db *sqlx.DB) *consumerJob {
 			if err := repo.IncreaseComicView(ctx, increaseView.ComicID); err != nil {
 				return err
 			}
-			if err := repo.IncreaseViewChapter(ctx, increaseView.ChapterID); err != nil {
+			if err := repo.IncreaseChapterView(ctx, increaseView.ChapterID); err != nil {
 				return err
 			}
 
