@@ -30,6 +30,11 @@ func (engine *consumerEngine) Start() {
 		false,
 		WriteHistoryAfterViewChapter(engine.db),
 	)
+	engine.startSubscribeTopic(
+		common.TopicIncreaseView,
+		false,
+		IncreaseViewAfterViewChapter(engine.db),
+	)
 
 }
 

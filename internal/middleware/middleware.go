@@ -25,4 +25,5 @@ type MiddlewareManager interface {
 	RequiredAuthJWTMiddleware() gin.HandlerFunc
 	OptionalAuthJWTMiddleware() gin.HandlerFunc
 	WriteHistory() gin.HandlerFunc
+	IncreaseView() gin.HandlerFunc
 }
