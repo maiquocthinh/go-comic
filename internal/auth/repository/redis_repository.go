@@ -10,7 +10,7 @@ type authRedisRepo struct {
 	redisClient *redis.Client
 }
 
-func NewAuthRedisRepository(redisClient *redis.Client) *authRedisRepo {
+func NewAuthRedisRepository(redisClient *redis.Client) AuthRedisRepository {
 	return &authRedisRepo{redisClient: redisClient}
 }
 

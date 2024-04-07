@@ -15,7 +15,7 @@ type authHandlers struct {
 	authUseCase usecase.AuthUseCase
 }
 
-func NewComicHandlers(mm middleware.MiddlewareManager, authUseCase usecase.AuthUseCase) *authHandlers {
+func NewComicHandlers(mm middleware.MiddlewareManager, authUseCase usecase.AuthUseCase) AuthHandlers {
 	return &authHandlers{
 		mm:          mm,
 		authUseCase: authUseCase,
@@ -23,6 +23,7 @@ func NewComicHandlers(mm middleware.MiddlewareManager, authUseCase usecase.AuthU
 }
 
 type AuthHandlers interface {
+	MapComicRotes(route *gin.RouterGroup)
 	Register() gin.HandlerFunc
 	Login() gin.HandlerFunc
 	Logout() gin.HandlerFunc

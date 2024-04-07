@@ -11,13 +11,14 @@ type genreHandlers struct {
 	genreUseCase usecase.GenreUseCase
 }
 
-func NewGenreHandlers(genreUseCase usecase.GenreUseCase) *genreHandlers {
+func NewGenreHandlers(genreUseCase usecase.GenreUseCase) GenreHandlers {
 	return &genreHandlers{
 		genreUseCase: genreUseCase,
 	}
 }
 
 type GenreHandlers interface {
+	MapComicRotes(route *gin.RouterGroup)
 	GetAllGenres() gin.HandlerFunc
 }
 

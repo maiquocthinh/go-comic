@@ -12,7 +12,7 @@ type userRepo struct {
 	db *sqlx.DB
 }
 
-func NewUserRepository(db *sqlx.DB) *userRepo {
+func NewUserRepository(db *sqlx.DB) UserRepository {
 	return &userRepo{db: db}
 }
 

@@ -12,7 +12,7 @@ type commentRepo struct {
 	db *sqlx.DB
 }
 
-func NewCommentRepository(db *sqlx.DB) *commentRepo {
+func NewCommentRepository(db *sqlx.DB) CommentRepository {
 	return &commentRepo{
 		db: db,
 	}

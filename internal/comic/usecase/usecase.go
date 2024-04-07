@@ -9,10 +9,10 @@ import (
 )
 
 type comicUseCase struct {
-	comicRepo repository.Repository
+	comicRepo repository.ComicRepository
 }
 
-func NewComicUseCase(comicRepo repository.Repository) *comicUseCase {
+func NewComicUseCase(comicRepo repository.ComicRepository) ComicUseCase {
 	return &comicUseCase{comicRepo: comicRepo}
 }
 

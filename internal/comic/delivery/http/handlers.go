@@ -16,18 +16,19 @@ type comicHandlers struct {
 	comicUseCase usecase.ComicUseCase
 }
 
-func NewComicHandlers(mm middleware.MiddlewareManager, comicUseCase usecase.ComicUseCase) *comicHandlers {
+func NewComicHandlers(mm middleware.MiddlewareManager, comicUseCase usecase.ComicUseCase) ComicHandlers {
 	return &comicHandlers{mm: mm, comicUseCase: comicUseCase}
 }
 
 type ComicHandlers interface {
-	List() gin.HandlerFunc
+	MapComicRotes(route *gin.RouterGroup)
+	ListComic() gin.HandlerFunc
 	GetComic() gin.HandlerFunc
 	GetChapterOfComic() gin.HandlerFunc
 	SearchComic() gin.HandlerFunc
 }
 
-func (h *comicHandlers) List() gin.HandlerFunc {
+func (h *comicHandlers) ListComic() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var paging common.Paging
 		var filter models.ComicFilter
