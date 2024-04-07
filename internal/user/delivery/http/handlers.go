@@ -17,7 +17,7 @@ type userHandlers struct {
 	userUseCase usecase.UserUseCase
 }
 
-func NewUserHandlers(mm middleware.MiddlewareManager, userUseCase usecase.UserUseCase) *userHandlers {
+func NewUserHandlers(mm middleware.MiddlewareManager, userUseCase usecase.UserUseCase) UserHandlers {
 	return &userHandlers{
 		mm:          mm,
 		userUseCase: userUseCase,
@@ -25,6 +25,7 @@ func NewUserHandlers(mm middleware.MiddlewareManager, userUseCase usecase.UserUs
 }
 
 type UserHandlers interface {
+	MapComicRotes(route *gin.RouterGroup)
 	GetProfile() gin.HandlerFunc
 	UpdateProfile() gin.HandlerFunc
 	UpdateAvatar() gin.HandlerFunc

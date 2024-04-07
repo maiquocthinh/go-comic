@@ -10,7 +10,7 @@ import (
 	"github.com/maiquocthinh/go-comic/pkg/common"
 )
 
-func (repo *comicRepo) List(ctx context.Context, filter *models.ComicFilter, paging *common.Paging) ([]*models.Comic, error) {
+func (repo *comicRepo) ListComic(ctx context.Context, filter *models.ComicFilter, paging *common.Paging) ([]*models.Comic, error) {
 	listComic := make([]*models.Comic, 0)
 	query := "SELECT *, ( SELECT `name` FROM `chapters` WHERE `comic_id` = `comics`.`id` ORDER BY `id` DESC LIMIT 1 ) AS lasted_chapter " +
 		"FROM `comics` WHERE 1=1 "
@@ -48,15 +48,15 @@ func (repo *comicRepo) List(ctx context.Context, filter *models.ComicFilter, pag
 
 	switch filter.SortBy {
 	case models.SortByNewComic:
-		query += fmt.Sprintf("ORDER BY updated_at %s ", sortType)
+		query += fmt.Sprintf("AND `comics`.`name` <> '' ORDER BY `comics`.`updated_at` %s ", sortType)
 	case models.SortByMostView:
-		query += fmt.Sprintf("ORDER BY viewed %s ", sortType)
+		query += fmt.Sprintf("ORDER BY `comics`.`viewed` %s ", sortType)
 	case models.SortByNewChapter:
-		query += fmt.Sprintf("ORDER BY (SELECT MAX(updated_at) FROM `chapters` WHERE `chapters`.`comic_id` = `comics`.`id`) %s ", sortType)
+		query += fmt.Sprintf("ORDER BY (SELECT MAX(`updated_at`) FROM `chapters` WHERE `chapters`.`comic_id` = `comics`.`id`) %s ", sortType)
 	case models.SortByMostChapter:
 		query += fmt.Sprintf("ORDER BY (SELECT COUNT(*) FROM `chapters` WHERE `chapters`.`comic_id` = `comics`.`id`) %s ", sortType)
 	default:
-		query += fmt.Sprintf("ORDER BY id %s ", sortType)
+		query += fmt.Sprintf("ORDER BY `comics`.`id` %s ", sortType)
 	}
 
 	query, args, err := sqlx.Named(query, filter)
@@ -116,11 +116,11 @@ func (repo *comicRepo) SearchComic(ctx context.Context, keyword string, paging *
 	rows, err := repo.db.Unsafe().QueryxContext(
 		ctx,
 		"SELECT	*, "+
-			" ( SELECT `name` FROM `chapters` WHERE `comic_id` = `comics`.`id` ORDER BY `id` DESC LIMIT 1 ) AS lasted_chapter, "+
-			" MATCH ( `name`, `other_name` ) AGAINST ( ? ) as relative "+
+			" ( SELECT `name` FROM `chapters` WHERE `comic_id` = `comics`.`id` ORDER BY `id` DESC LIMIT 1 ) AS `lasted_chapter`, "+
+			" MATCH ( `name`, `other_name` ) AGAINST ( ? ) as `relative` "+
 			"FROM `comics` "+
 			"WHERE MATCH ( `name`, `other_name` ) AGAINST ( ? ) "+
-			"ORDER BY relative DESC "+
+			"ORDER BY `relative` DESC "+
 			"LIMIT ? OFFSET ? ;",
 		keyword, keyword,
 		paging.PageSize, (paging.Page-1)*paging.PageSize,

@@ -11,7 +11,7 @@ type authRepo struct {
 	db *sqlx.DB
 }
 
-func NewAuthRepository(db *sqlx.DB) *authRepo {
+func NewAuthRepository(db *sqlx.DB) AuthRepository {
 	return &authRepo{db: db}
 }
 

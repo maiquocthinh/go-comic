@@ -16,7 +16,7 @@ type commentHandlers struct {
 	commentUseCase usecase.CommentUseCase
 }
 
-func NewCommentHandlers(mm middleware.MiddlewareManager, commentUseCase usecase.CommentUseCase) *commentHandlers {
+func NewCommentHandlers(mm middleware.MiddlewareManager, commentUseCase usecase.CommentUseCase) CommentHandlers {
 	return &commentHandlers{
 		mm:             mm,
 		commentUseCase: commentUseCase,
@@ -24,6 +24,7 @@ func NewCommentHandlers(mm middleware.MiddlewareManager, commentUseCase usecase.
 }
 
 type CommentHandlers interface {
+	MapComicRotes(route *gin.RouterGroup)
 	GetCommentsOfChapter() gin.HandlerFunc
 	GetRepliesOfComment() gin.HandlerFunc
 	PostComment() gin.HandlerFunc

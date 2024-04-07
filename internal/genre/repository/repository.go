@@ -10,7 +10,7 @@ type genreRepo struct {
 	db *sqlx.DB
 }
 
-func NewGenreRepository(db *sqlx.DB) *genreRepo {
+func NewGenreRepository(db *sqlx.DB) GenreRepository {
 	return &genreRepo{db: db}
 }
 

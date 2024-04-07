@@ -12,13 +12,13 @@ type comicRepo struct {
 	db *sqlx.DB
 }
 
-func NewComicRepository(db *sqlx.DB) *comicRepo {
+func NewComicRepository(db *sqlx.DB) ComicRepository {
 	return &comicRepo{db: db}
 }
 
-type Repository interface {
+type ComicRepository interface {
 	GetComic(ctx context.Context, ID int) (*models.ComicDetail, error)
-	List(ctx context.Context, filter *models.ComicFilter, paging *common.Paging) ([]*models.Comic, error)
+	ListComic(ctx context.Context, filter *models.ComicFilter, paging *common.Paging) ([]*models.Comic, error)
 	GetChapterOfComic(ctx context.Context, comicID, chapterID int) (*models.ChapterDetail, error)
 	SearchComic(ctx context.Context, keyword string, paging *common.Paging) ([]*models.Comic, error)
 	WriteHistoryView(ctx context.Context, historyView *models.HistoryView) error

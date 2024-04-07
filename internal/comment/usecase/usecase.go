@@ -12,7 +12,7 @@ type commentUseCase struct {
 	commentRepo repository.CommentRepository
 }
 
-func NewCommentUseCase(commentRepo repository.CommentRepository) *commentUseCase {
+func NewCommentUseCase(commentRepo repository.CommentRepository) CommentUseCase {
 	return &commentUseCase{commentRepo: commentRepo}
 }
 

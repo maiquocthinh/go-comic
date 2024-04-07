@@ -10,7 +10,7 @@ type genreUseCase struct {
 	genreRepo repository.GenreRepository
 }
 
-func NewGenreUseCase(genreRepo repository.GenreRepository) *genreUseCase {
+func NewGenreUseCase(genreRepo repository.GenreRepository) GenreUseCase {
 	return &genreUseCase{
 		genreRepo: genreRepo,
 	}

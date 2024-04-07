@@ -14,7 +14,7 @@ type userUseCase struct {
 	uploadProvider uploadprovider.UploadProvider
 }
 
-func NewUserUseCase(userRepo repository.UserRepository, uploadProvider uploadprovider.UploadProvider) *userUseCase {
+func NewUserUseCase(userRepo repository.UserRepository, uploadProvider uploadprovider.UploadProvider) UserUseCase {
 	return &userUseCase{
 		userRepo:       userRepo,
 		uploadProvider: uploadProvider,

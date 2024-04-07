@@ -14,7 +14,7 @@ type authUseCase struct {
 	authRedisRepo repository.AuthRedisRepository
 }
 
-func NewAuthUseCase(cfg *config.Config, authRepo repository.AuthRepository, authRedisRepo repository.AuthRedisRepository) *authUseCase {
+func NewAuthUseCase(cfg *config.Config, authRepo repository.AuthRepository, authRedisRepo repository.AuthRedisRepository) AuthUseCase {
 	return &authUseCase{
 		cfg:           cfg,
 		authRepo:      authRepo,
