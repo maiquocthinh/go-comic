@@ -16,3 +16,8 @@ func (uc *comicUseCase) SearchComic(ctx context.Context, keyword string, paging 
 	paging.Fulfill()
 	return uc.comicRepo.SearchComic(ctx, keyword, paging)
 }
+
+func (uc *comicUseCase) SearchChapterOfComic(ctx context.Context, comicID int, keyword string, paging *common.Paging) ([]*models.ChapterSimple, error) {
+	paging.Fulfill()
+	return uc.comicRepo.SearchChapterOfComic(ctx, comicID, keyword, paging)
+}
