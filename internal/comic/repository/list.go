@@ -157,8 +157,8 @@ func (repo *comicRepo) SearchChapterOfComic(ctx context.Context, comicID int, ke
 
 	if err := repo.db.QueryRowxContext(
 		ctx,
-		"SELECT COUNT(*) FROM `chapters` WHERE `chapters`.`comic_id` = ? AND MATCH ( `name` ) AGAINST ( ? )",
-		comicID, keyword,
+		"SELECT COUNT(*) FROM `chapters` WHERE `chapters`.`comic_id` = ? AND `name` LIKE ?;",
+		comicID, "%"+keyword+"%",
 	).Scan(&paging.Total); err != nil {
 		return nil, err
 	}
@@ -169,10 +169,10 @@ func (repo *comicRepo) SearchChapterOfComic(ctx context.Context, comicID int, ke
 		"SELECT `chapters`.`id`, `chapters`.`name`, `chapters`.`viewed`, `chapters`.`updated_at` "+
 			"FROM `chapters` "+
 			"WHERE `chapters`.`comic_id` = ? "+
-			"AND MATCH ( `name` ) AGAINST ( ? ) "+
+			"AND `name` LIKE ? "+
 			"ORDER BY `chapters`.`id` DESC "+
 			"LIMIT ? OFFSET ? ;",
-		comicID, keyword,
+		comicID, "%"+keyword+"%",
 		paging.PageSize, (paging.Page-1)*paging.PageSize,
 	)
 	if err != nil {
