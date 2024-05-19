@@ -32,3 +32,7 @@ type ComicFilter struct {
 type ComicSearch struct {
 	Keyword string `json:"-" form:"keyword" binding:"required"`
 }
+
+type ChapterSearch struct {
+	Keyword string `json:"-" form:"keyword" binding:"required"`
+}

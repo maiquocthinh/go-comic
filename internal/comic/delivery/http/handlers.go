@@ -112,3 +112,32 @@ func (h *comicHandlers) SearchComic() gin.HandlerFunc {
 		ctx.JSON(http.StatusOK, common.NewSuccessResponse(listComic, paging))
 	}
 }
+
+func (h *comicHandlers) SearchChapterOfComic() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		var search models.ChapterSearch
+		var paging common.Paging
+
+		comicID, err := strconv.Atoi(ctx.Param("comicID"))
+		if err != nil {
+			panic(common.NewBadRequestApiError(err, "`comicID` must be int"))
+		}
+
+		if err := ctx.BindQuery(&search); err != nil || search.Keyword == "" {
+			common.HandleBindingErr(ctx, err)
+			return
+		}
+
+		if err := ctx.BindQuery(&paging); err != nil {
+			common.HandleBindingErr(ctx, err)
+			return
+		}
+
+		listChapter, err := h.comicUseCase.SearchChapterOfComic(ctx.Request.Context(), comicID, search.Keyword, &paging)
+		if err != nil {
+			panic(err)
+		}
+
+		ctx.JSON(http.StatusOK, common.NewSuccessResponse(listChapter, paging))
+	}
+}

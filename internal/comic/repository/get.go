@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"github.com/maiquocthinh/go-comic/internal/comic/models"
 	"github.com/maiquocthinh/go-comic/pkg/common"
+	"github.com/maiquocthinh/go-comic/pkg/utils"
 )
 
 func (repo *comicRepo) GetComic(ctx context.Context, ID int) (*models.ComicDetail, error) {
@@ -62,6 +63,9 @@ func (repo *comicRepo) GetComic(ctx context.Context, ID int) (*models.ComicDetai
 	if err = chaptersStmt.Select(&comicDetail.Chapters, ID); err != nil {
 		return nil, err
 	}
+
+	// change base url of image
+	utils.ChangeDomain(&comicDetail.Image, "st.nettruyenbb.com")
 
 	return &comicDetail, nil
 }

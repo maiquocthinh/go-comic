@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"fmt"
+	"github.com/maiquocthinh/go-comic/pkg/utils"
 	"strings"
 
 	"github.com/jmoiron/sqlx"
@@ -98,6 +99,11 @@ func (repo *comicRepo) ListComic(ctx context.Context, filter *models.ComicFilter
 		listComic = append(listComic, &comic)
 	}
 
+	// change base url of image
+	for _, comic := range listComic {
+		utils.ChangeDomain(&comic.Image, "st.nettruyenbb.com")
+	}
+
 	return listComic, nil
 }
 
@@ -138,5 +144,49 @@ func (repo *comicRepo) SearchComic(ctx context.Context, keyword string, paging *
 		listComic = append(listComic, &comic)
 	}
 
+	// change base url of image
+	for _, comic := range listComic {
+		utils.ChangeDomain(&comic.Image, "st.nettruyenbb.com")
+	}
+
 	return listComic, nil
+}
+
+func (repo *comicRepo) SearchChapterOfComic(ctx context.Context, comicID int, keyword string, paging *common.Paging) ([]*models.ChapterSimple, error) {
+	listChapter := make([]*models.ChapterSimple, 0)
+
+	if err := repo.db.QueryRowxContext(
+		ctx,
+		"SELECT COUNT(*) FROM `chapters` WHERE `chapters`.`comic_id` = ? AND MATCH ( `name` ) AGAINST ( ? )",
+		comicID, keyword,
+	).Scan(&paging.Total); err != nil {
+		return nil, err
+	}
+	paging.Sync()
+
+	rows, err := repo.db.Unsafe().QueryxContext(
+		ctx,
+		"SELECT `chapters`.`id`, `chapters`.`name`, `chapters`.`viewed`, `chapters`.`updated_at` "+
+			"FROM `chapters` "+
+			"WHERE `chapters`.`comic_id` = ? "+
+			"AND MATCH ( `name` ) AGAINST ( ? ) "+
+			"ORDER BY `chapters`.`id` DESC "+
+			"LIMIT ? OFFSET ? ;",
+		comicID, keyword,
+		paging.PageSize, (paging.Page-1)*paging.PageSize,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var chapter models.ChapterSimple
+		if err := rows.StructScan(&chapter); err != nil {
+			return nil, err
+		}
+		listChapter = append(listChapter, &chapter)
+	}
+
+	return listChapter, nil
 }
