@@ -62,6 +62,9 @@ func (s *Server) Run() error {
 		}
 	}()
 
+	// Use Middlewares
+	s.useMiddlewares()
+
 	// Map Handlers
 	if err := s.mapHandlers(); err != nil {
 		return err

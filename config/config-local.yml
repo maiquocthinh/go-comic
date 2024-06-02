@@ -25,3 +25,23 @@ Dropbox:
   AppKey: appkey
   AppSecret: appsecret
   RefreshToken: refreshtoken
+
+CorsPolicy:
+  AllowOrigins:
+    - "*"
+  AllowMethods:
+    - "GET"
+    - "POST"
+    - "PUT"
+    - "PATCH"
+    - "DELETE"
+  AllowHeaders:
+    - "Accept"
+    - "Authorization"
+    - "Content-Type"
+    - "Content-Length"
+    - "Origin"
+  ExposeHeaders:
+    - "Content-Length"
+  AllowCredentials: true
+  MaxAge: 43200 # 12 hours
