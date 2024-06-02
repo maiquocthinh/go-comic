@@ -59,9 +59,6 @@ func (s *Server) mapHandlers() error {
 	commentHandlers := commentHttp.NewCommentHandlers(middlewareManager, commentUC)
 	genreHandlers := genreHttp.NewGenreHandlers(genreUC)
 
-	// Use middleware
-	s.gin.Use(middleware.ErrorLogger(), middleware.Recovery()) // don't change order
-
 	// Map Handlers
 	v1 := s.gin.Group("/api/v1")
 

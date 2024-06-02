@@ -13,7 +13,7 @@ func main() {
 	log.Println("Starting API server")
 
 	// load config
-	cfg, err := config.NewConfig("./config/config-remote")
+	cfg, err := config.NewConfig("./config/config-local")
 	if err != nil {
 		log.Fatalln("Load config fail!")
 	}

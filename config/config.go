@@ -9,10 +9,11 @@ import (
 )
 
 type Config struct {
-	Server  ServerConfig
-	MySQL   MySQLConfig
-	Redis   RedisConfig
-	Dropbox DropboxConfig
+	Server     ServerConfig
+	MySQL      MySQLConfig
+	Redis      RedisConfig
+	Dropbox    DropboxConfig
+	CorsPolicy CorsPolicyConfig
 }
 
 type ServerConfig struct {
@@ -45,6 +46,15 @@ type DropboxConfig struct {
 	AppKey       string
 	AppSecret    string
 	RefreshToken string
+}
+
+type CorsPolicyConfig struct {
+	AllowOrigins     []string
+	AllowMethods     []string
+	AllowHeaders     []string
+	ExposeHeaders    []string
+	AllowCredentials bool
+	MaxAge           int // second
 }
 
 func NewConfig(filename string) (*Config, error) {
