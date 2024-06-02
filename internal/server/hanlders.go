@@ -43,7 +43,7 @@ func (s *Server) mapHandlers() error {
 	genreRepo := genreRepository.NewGenreRepository(s.mysqlDB)
 
 	// Init useCases
-	authUC := authUseCase.NewAuthUseCase(s.config, authRepo, authRedisRepo)
+	authUC := authUseCase.NewAuthUseCase(s.config, s.pubsub, authRepo, authRedisRepo)
 	comicUC := comicUseCase.NewComicUseCase(comicRepo)
 	userUC := userUseCase.NewUserUseCase(userRepo, dropboxProvider)
 	commentUC := commentUseCase.NewCommentUseCase(commentRepo)

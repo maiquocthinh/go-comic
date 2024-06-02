@@ -12,7 +12,7 @@ func (repo *authRepo) GetUserByEmail(ctx context.Context, email string) (*entiti
 
 	if err := repo.db.GetContext(ctx, &user, "SELECT * FROM `users` WHERE `email` = ?", email); err != nil {
 		if err == sql.ErrNoRows {
-			return nil, common.NewUnauthorizedApiError(err, "Email or Password wrong!")
+			return nil, common.NewUnauthorizedApiError(err, "User not existed!")
 		}
 		return nil, err
 	}

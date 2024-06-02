@@ -19,4 +19,5 @@ type AuthRepository interface {
 	GetUserByEmail(ctx context.Context, email string) (*entities.User, error)
 	GetUserByUsername(ctx context.Context, username string) (*entities.User, error)
 	CreateUser(ctx context.Context, userRegister *models.UserRegister) error
+	ResetPassword(ctx context.Context, email string, hashedPassword string) error
 }

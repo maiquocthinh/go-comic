@@ -4,6 +4,7 @@ Server:
   WriteTimeout: 5
   JwtSecretKey: B5bJHoI8aVLjAAeV
   JwtUserExpiration: 604800 # 7 days
+  ResetPasswordCodeExpiration: 300 # 3 minutes
 
 MySQL:
   Host: localhost
@@ -26,6 +27,11 @@ Dropbox:
   AppSecret: appsecret
   RefreshToken: refreshtoken
 
+Gmail:
+  "ClientId": "Your ClientId"
+  "ClientSecret": "Your ClientSecret"
+  "RefreshToken": "Your RefreshToken"
+
 CorsPolicy:
   AllowOrigins:
     - "*"
@@ -38,7 +44,7 @@ CorsPolicy:
   AllowHeaders:
     - "Accept"
     - "Authorization"
-    - "Content-Type"
+    - "Content-Typed"
     - "Content-Length"
     - "Origin"
   ExposeHeaders:

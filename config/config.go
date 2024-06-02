@@ -13,15 +13,17 @@ type Config struct {
 	MySQL      MySQLConfig
 	Redis      RedisConfig
 	Dropbox    DropboxConfig
+	Gmail      Gmail
 	CorsPolicy CorsPolicyConfig
 }
 
 type ServerConfig struct {
-	Port              string
-	ReadTimeout       time.Duration
-	WriteTimeout      time.Duration
-	JwtSecretKey      string
-	JwtUserExpiration int // second
+	Port                        string
+	ReadTimeout                 time.Duration
+	WriteTimeout                time.Duration
+	JwtSecretKey                string
+	JwtUserExpiration           int // second
+	ResetPasswordCodeExpiration int // second
 }
 
 type MySQLConfig struct {
@@ -45,6 +47,12 @@ type RedisConfig struct {
 type DropboxConfig struct {
 	AppKey       string
 	AppSecret    string
+	RefreshToken string
+}
+
+type Gmail struct {
+	ClientId     string
+	ClientSecret string
 	RefreshToken string
 }
 
