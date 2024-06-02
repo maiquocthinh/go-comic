@@ -5,6 +5,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/maiquocthinh/go-comic/pkg/asyncjob"
 	"github.com/maiquocthinh/go-comic/pkg/common"
+	"github.com/maiquocthinh/go-comic/pkg/email"
 	"github.com/maiquocthinh/go-comic/pkg/pubsub"
 	"log"
 )
@@ -15,12 +16,13 @@ type consumerJob struct {
 }
 
 type consumerEngine struct {
-	ps pubsub.PubSub
-	db *sqlx.DB
+	ps       pubsub.PubSub
+	db       *sqlx.DB
+	emailSrv email.EmailService
 }
 
-func NewEngine(db *sqlx.DB, ps pubsub.PubSub) *consumerEngine {
-	return &consumerEngine{db: db, ps: ps}
+func NewEngine(db *sqlx.DB, emailSrv email.EmailService, ps pubsub.PubSub) *consumerEngine {
+	return &consumerEngine{db: db, emailSrv: emailSrv, ps: ps}
 }
 
 func (engine *consumerEngine) Start() {
@@ -35,7 +37,11 @@ func (engine *consumerEngine) Start() {
 		false,
 		IncreaseViewAfterViewChapter(engine.db),
 	)
-
+	engine.startSubscribeTopic(
+		common.TopicSendCodeResetPassword,
+		false,
+		SendCodeResetPasswordViaEmail(engine.emailSrv),
+	)
 }
 
 func (engine *consumerEngine) startSubscribeTopic(topic string, isConcurrent bool, consumerJobs ...*consumerJob) {

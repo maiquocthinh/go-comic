@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"github.com/maiquocthinh/go-comic/pkg/email"
 	"github.com/maiquocthinh/go-comic/pkg/pubsub"
 	"github.com/maiquocthinh/go-comic/pkg/pubsub/redis_pubsub"
 	"github.com/maiquocthinh/go-comic/pkg/subscriber"
@@ -29,6 +30,7 @@ type Server struct {
 	config      *config.Config
 	mysqlDB     *sqlx.DB
 	redisClient *redis.Client
+	emailSrv    email.EmailService
 	pubsub      pubsub.PubSub
 	logger      *logrus.Logger
 }
@@ -39,6 +41,7 @@ func NewServer(cfg *config.Config, mysqlDB *sqlx.DB, redisClient *redis.Client) 
 		config:      cfg,
 		mysqlDB:     mysqlDB,
 		redisClient: redisClient,
+		emailSrv:    email.NewGmailService(&cfg.Gmail),
 		pubsub:      redis_pubsub.NewRedisPubSub(redisClient),
 		logger:      logrus.New(),
 	}
@@ -53,7 +56,7 @@ func (s *Server) Run() error {
 		MaxHeaderBytes: maxHeaderBytes,
 	}
 
-	subscriber.NewEngine(s.mysqlDB, s.pubsub).Start()
+	subscriber.NewEngine(s.mysqlDB, s.emailSrv, s.pubsub).Start()
 
 	go func() {
 		s.logger.Infof("Server is listening on PORT: %s", s.config.Server.Port)

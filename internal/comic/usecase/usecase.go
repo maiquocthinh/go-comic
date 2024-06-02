@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-
 	"github.com/maiquocthinh/go-comic/internal/comic/models"
 	"github.com/maiquocthinh/go-comic/internal/comic/repository"
 	"github.com/maiquocthinh/go-comic/pkg/common"
