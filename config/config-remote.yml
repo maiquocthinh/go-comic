@@ -10,7 +10,7 @@ MySQL:
   Host: sql.freedb.tech
   Port: 3306
   Username: freedb_quocthinh
-  Password: g$%m%7eCZmBxs!J
+  Password: "6ct4Uuc#A6EbZDE"
   DBName: freedb_nettruyen
   DriverName: mysql
 
