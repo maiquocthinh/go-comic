@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"io"
 	"net/url"
+	"strconv"
 )
 
 func GetMD5Hash(text string) string {
@@ -39,4 +40,16 @@ func GenerateOTPCode(max int) string {
 		b[i] = table[int(b[i])%len(table)]
 	}
 	return string(b)
+}
+
+func SecondsToMinutes(seconds int) string {
+	minutes := seconds / 60
+	remainderSeconds := seconds % 60
+
+	result := strconv.Itoa(minutes) + " minutes"
+	if remainderSeconds > 0 {
+		result += " " + strconv.Itoa(remainderSeconds) + " seconds"
+	}
+
+	return result
 }

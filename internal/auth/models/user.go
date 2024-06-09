@@ -22,8 +22,9 @@ type UserResetPassword struct {
 }
 
 type UserResetPasswordPubSub struct {
-	Email     string  `json:"email"`
-	Username  string  `json:"username"`
-	Firstname *string `json:"firstname"`
-	Code      string  `json:"code"`
+	Email     string `json:"email"`
+	Username  string `json:"username"`
+	Firstname string `json:"firstname"`
+	Code      string `json:"code"`
+	ExpiredIn string `json:"expired_in"`
 }

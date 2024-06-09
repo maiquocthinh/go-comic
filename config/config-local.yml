@@ -4,7 +4,7 @@ Server:
   WriteTimeout: 5
   JwtSecretKey: B5bJHoI8aVLjAAeV
   JwtUserExpiration: 604800 # 7 days
-  ResetPasswordCodeExpiration: 300 # 3 minutes
+  ResetPasswordCodeExpiration: 180 # 3 minutes
 
 MySQL:
   Host: localhost
@@ -44,7 +44,7 @@ CorsPolicy:
   AllowHeaders:
     - "Accept"
     - "Authorization"
-    - "Content-Typed"
+    - "Content-Type"
     - "Content-Length"
     - "Origin"
   ExposeHeaders:

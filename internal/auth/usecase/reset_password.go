@@ -66,9 +66,10 @@ func (uc authUseCase) SendCodeResetPassword(ctx context.Context, userSendCodeRes
 	{
 		jsonData, err := json.Marshal(&models.UserResetPasswordPubSub{
 			Email:     user.Email,
-			Firstname: user.FirstName,
+			Firstname: *user.FirstName,
 			Username:  user.Username,
 			Code:      code,
+			ExpiredIn: utils.SecondsToMinutes(uc.cfg.Server.ResetPasswordCodeExpiration),
 		})
 
 		err = uc.pubsub.Publish(ctx, common.TopicSendCodeResetPassword, string(jsonData))
