@@ -4,6 +4,7 @@ Server:
   WriteTimeout: 5
   JwtSecretKey: B5bJHoI8aVLjAAeV
   JwtUserExpiration: 604800 # 7 days
+  ResetPasswordCodeExpiration: 180 # 3 minutes
 
 MySQL:
   Host: sql.freedb.tech
@@ -25,6 +26,11 @@ Dropbox:
   AppKey: 22fbmanjs9dvpqs
   AppSecret: gy41e9xmgjpk9k4
   RefreshToken: acUDBMzDdCkAAAAAAAAAAZFUJhpo2VYMfdxefDZ0qVGvnENZEJC5um8NFkHSLEuV
+
+Gmail:
+  "ClientId": "153351185108-o2061k0308r7g628i2he0m7m1e488nuu.apps.googleusercontent.com"
+  "ClientSecret": "Ilt1i7jas4EIpvSxKcMFWvIt"
+  "RefreshToken": "1//041gvkYW1NY7UCgYIARAAGAQSNwF-L9IrURFJ5bVuc889Cki6ztOVFhSfU7MDXPnbl9NtWIcpgoattD3hISzF-zgByo7yA3aso1A"
 
 CorsPolicy:
   AllowOrigins:
