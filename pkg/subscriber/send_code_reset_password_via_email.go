@@ -23,9 +23,10 @@ func SendCodeResetPasswordViaEmail(emailSvr email.EmailService) *consumerJob {
 				Subject:      "Reset your password",
 				TemplateName: template.TemplateResetPassword,
 				Model: model.ResetPassword{
-					Firstname: *userResetPassword.Firstname,
+					Firstname: userResetPassword.Firstname,
 					Username:  userResetPassword.Username,
 					Code:      userResetPassword.Code,
+					ExpiredIn: userResetPassword.ExpiredIn,
 				},
 			})
 
