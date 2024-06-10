@@ -64,6 +64,10 @@ func (uc authUseCase) SendCodeResetPassword(ctx context.Context, userSendCodeRes
 
 	// send code via email
 	{
+		if user.FirstName == nil {
+			user.FirstName = new(string)
+		}
+
 		jsonData, err := json.Marshal(&models.UserResetPasswordPubSub{
 			Email:     user.Email,
 			Firstname: *user.FirstName,
