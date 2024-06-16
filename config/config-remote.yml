@@ -7,11 +7,11 @@ Server:
   ResetPasswordCodeExpiration: 180 # 3 minutes
 
 MySQL:
-  Host: sql.freedb.tech
-  Port: 3306
-  Username: freedb_quocthinh
-  Password: "6ct4Uuc#A6EbZDE"
-  DBName: freedb_nettruyen
+  Host: monorail.proxy.rlwy.net
+  Port: 15777
+  Username: root
+  Password: DffsQNMJZLWeOajTmuhFClsWkjozbKKh
+  DBName: nettruyen
   DriverName: mysql
 
 Redis:
